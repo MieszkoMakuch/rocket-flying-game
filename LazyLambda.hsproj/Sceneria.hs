@@ -38,7 +38,7 @@ skySprites = [ (spriteWithTexture skyTexture)
              | y <- [0, 4.5*skyTileHeight..4.5*(wysokoscSceny + skyTileHeight)]]
   where
     skyWidth        = szerokoscSceny --(skyTileWidth / 2) + groundTileHeight
-    movementDuration = 0.015 * skyTileHeight
+    movementDuration = 0.045 * skyTileHeight
     skyMovement      = odtwarzajListeAkcjiWNieskonczonosc
                        [ (moveBy $ Vector 0 (-4.5*skyTileHeight))   -- move
                          { actionDuration = movementDuration }
