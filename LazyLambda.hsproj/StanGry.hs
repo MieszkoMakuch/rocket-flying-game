@@ -19,6 +19,8 @@ data GameState = Running | Crash | Over
 data SceneState = SceneState 
                  { sceneScore :: Int
                  , keyPressed :: Bool
+                 , leftKeyPressed :: Bool
+                 , rightKeyPressed :: Bool
                  , bumpScore  :: Bool
                  , gameState  :: GameState
                  }
@@ -27,6 +29,8 @@ initialSceneState
   = SceneState 
     { sceneScore = 0
     , keyPressed = False 
+    , leftKeyPressed = False 
+    , rightKeyPressed = False 
     , bumpScore  = False 
     , gameState  = Running
     }

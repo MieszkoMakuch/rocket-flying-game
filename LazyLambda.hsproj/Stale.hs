@@ -8,12 +8,12 @@ import Data.Word
 
 -- Wymiary sceny
 szerokoscSceny, wysokoscSceny :: GFloat
-szerokoscSceny  = 667
-wysokoscSceny = 750
+szerokoscSceny  = 1267
+wysokoscSceny = 1450
 
 -- Wysokość szczeliny przez którą musi przeleciec bohater
-wysokoscSzczeliny :: GFloat
-wysokoscSzczeliny = 150
+szerokoscSzczeliny :: GFloat
+szerokoscSzczeliny = 150
 
 -- Kategorycazja różnych obiektów świata fizycznego (jako enum)
 data ObiektyFizyczne = Bohater    -- Lambda
@@ -44,3 +44,6 @@ kolorNieba = colorWithRGBA (81.0/255.0)
                           (192.0/255.0)
                           (201.0/255.0)
                           1.0
+-- Siła skrętu
+silaSkretu :: Double
+silaSkretu = 200

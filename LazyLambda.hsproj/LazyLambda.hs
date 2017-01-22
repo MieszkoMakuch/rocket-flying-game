@@ -16,7 +16,7 @@ lazyLambda :: LambdaScene
 lazyLambda
   = (sceneWithSize (Size szerokoscSceny wysokoscSceny))
     { sceneBackgroundColor  = kolorNieba
-    , sceneChildren         = [bird, movingNodes, groundPhysics, score]
+    , sceneChildren         = [rocket, movingNodes, groundPhysics, score]
     , sceneData             = initialSceneState
     , sceneUpdate           = Just update
     , scenePhysicsWorld     = physicsWorld
@@ -26,19 +26,19 @@ lazyLambda
     , sceneHandleEvent      = Just handleEvent
     }
 
-(bird1Texture, szerokoscBohatera, wysokoscBohatera) = stworzTeksture "Bird-01.png"
-(bird2Texture, _, _)                  = stworzTeksture "Bird-02.png"
-(bird3Texture, _, _)                  = stworzTeksture "Bird-03.png"
+(rocket1Texture, szerokoscBohatera, wysokoscBohatera) = stworzTeksture "Rocket-01-T.png"
+(rocket2Texture, _, _)                  = stworzTeksture "Rocket-02-T.png"
+(rocket3Texture, _, _)                  = stworzTeksture "Rocket-03-T.png"
 
-bird :: LambdaNode
-bird = (spriteWithTexture bird1Texture)
+rocket :: LambdaNode
+rocket = (spriteWithTexture rocket1Texture)
        { nodeName             = Just "Lambda"
        , nodePosition         = Point (szerokoscSceny * 0.35) (wysokoscSceny * 0.6) --w którym miejscu będzie ptak na starcie
        , nodeActionDirectives = [odtwarzajAkcjeWNieskonczonosc flap] --powtarzaj akcje flap (machanie skrzydłami) w nieskończoność (definicja flap poniżej)
        , nodeZRotation        = 0.003 --rotacja o x radianów wzgl. osi z (1 radian około 60stopni)
        , nodePhysicsBody      
            = Just $
-               (bodyWithCircleOfRadius (wysokoscBohatera / 2) Nothing) --tworzy kołowy obiekt fizyczny o poromieniu r (obserwacja: im mniejsze r tym mniejsza masa)
+               (bodyWithTextureSize rocket1Texture Nothing (Size (szerokoscBohatera) (wysokoscBohatera))) --tworzy kołowy obiekt fizyczny o poromieniu r (obserwacja: im mniejsze r tym mniejsza masa)
                { bodyCategoryBitMask    = categoryBitMask [Bohater] --[Bohater] - należy do Enuma zdefiniowanego w Constants
                , bodyCollisionBitMask   = categoryBitMask [Swiat]
                , bodyContactTestBitMask = categoryBitMask [Swiat, Wynik]
@@ -46,7 +46,7 @@ bird = (spriteWithTexture bird1Texture)
        }
   where
     flap = animateWithTextures --Definicja akcji flap - machanie skrzydłami
-             [bird1Texture, bird2Texture, bird3Texture, bird2Texture] 0.1 --[ zdjecie 1, zdjecie 2, zdjecie 3, zdjecie 2] co x sekund
+             [rocket1Texture, rocket2Texture, rocket3Texture, rocket2Texture] 0.1 --[ zdjecie 1, zdjecie 2, zdjecie 3, zdjecie 2] co x sekund
 
 movingNodes :: LambdaNode
 movingNodes = (node $ pipes : groundSprites ++ skySprites)
@@ -83,6 +83,8 @@ update scene@Scene{ sceneData = sceneState@SceneState{..} } _dt
   = case gameState of
       Running 
         | keyPressed -> bumpLambda scene{ sceneData = sceneState{ keyPressed = False } }
+        | leftKeyPressed -> lewySkretLambda scene{ sceneData = sceneState{ leftKeyPressed = False } }
+        | rightKeyPressed -> prawySkretLambda scene{ sceneData = sceneState{ rightKeyPressed = False } }
         | bumpScore  -> incScore scene{ sceneData = sceneState{ bumpScore = False } }
         | otherwise  -> tiltLambda scene
       Crash          -> crash scene{ sceneData = sceneState{ gameState = Over } }
@@ -91,6 +93,14 @@ update scene@Scene{ sceneData = sceneState@SceneState{..} } _dt
 bumpLambda :: LambdaScene -> LambdaScene
 bumpLambda scene
   = scene { sceneActionDirectives = [odtworzWlasnaAkcjeNa "Lambda" akcjaPodskok] }
+  
+lewySkretLambda :: LambdaScene -> LambdaScene
+lewySkretLambda scene
+  = scene { sceneActionDirectives = [odtworzWlasnaAkcjeNa "Lambda" akcjaLewySkret] }
+  
+prawySkretLambda :: LambdaScene -> LambdaScene
+prawySkretLambda scene
+  = scene { sceneActionDirectives = [odtworzWlasnaAkcjeNa "Lambda" akcjaPrawySkret] }
 
 tiltLambda :: LambdaScene -> LambdaScene
 tiltLambda scene 
@@ -137,4 +147,6 @@ contact state@SceneState{..} PhysicsContact{..}
 -- 
 handleEvent :: Event -> SceneState -> Maybe SceneState
 handleEvent KeyEvent{ keyEventType = KeyDown } state = Just state{ keyPressed = True }
+handleEvent MouseEvent{ mouseEventType = LeftMouseDown } state = Just state{ leftKeyPressed = True }
+handleEvent MouseEvent{ mouseEventType = RightMouseDown } state = Just state{ rightKeyPressed = True }
 handleEvent _                                  _     = Nothing

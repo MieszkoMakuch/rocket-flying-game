@@ -8,51 +8,51 @@ import FunkcjePomocnicze
 import StanGry
 
 
-(teksturaGornejPrzeszkody, szerokoscGornejPrzeszkody, wysokoscGornejPrzeszkody) = stworzTeksture "PipeUp.png"
-(teksturaDolnejPrzeszkody, szerokoscDolnejPrzeszkody, wysokoscDolnejPrzeszkody) = stworzTeksture "PipeDown.png"
+(teksturaPrawejPrzeszkody, szerokoscPrawejPrzeszkody, wysokoscPrawejPrzeszkody) = stworzTeksture "PipeRight.png"
+(teksturaLewejPrzeszkody, szerokoscLewejPrzeszkody, wysokoscLewejPrzeszkody) = stworzTeksture "PipeLeft.png"
 
 umiescParePrzeskod :: GFloat -> LambdaNode -> TimeInterval -> LambdaNode
 umiescParePrzeskod wysokoscBohatera pipes _dt
   = pipes
-    { nodeChildren = stworzParePrzeszkod wysokoscBohatera pipeUpY : nodeChildren pipes 
+    { nodeChildren = stworzParePrzeszkod wysokoscBohatera przeszkodaPrawaX : nodeChildren pipes 
     , nodeUserData = pipeState'
     }
   where
-    maksymalneOdchylenie = round (wysokoscSceny / 1.5) -- maksymalna różnica między pozycjami przeszkód 
+    maksymalneOdchylenie = round (szerokoscSceny / 1.5) -- maksymalna różnica między pozycjami przeszkód 
     (pipeState', i) = randomInt (nodeUserData pipes)
-    pipeUpY         = fromIntegral $ 120 + (i `mod` maksymalneOdchylenie) `div` 2 --losowa pozycja górnej przeszkody
+    przeszkodaPrawaX         = fromIntegral $ 0 + (i `mod` maksymalneOdchylenie) `div` 2 --losowa pozycja górnej przeszkody
 
--- Zwraca parę przeszkód ze szczeliną pomiędzy jako lista obiektów (przeszkodaDolna, szczelina, przeszkodaGorna)
+-- Zwraca parę przeszkód ze szczeliną pomiędzy jako lista obiektów (przeszkodaLewa, szczelina, przeszkodaPrawa)
 -- Przyjmuje wysokość bohatera i pozycje górnej przeszkody
 stworzParePrzeszkod :: GFloat -> GFloat -> LambdaNode
-stworzParePrzeszkod wysokoscBohatera przeszkodaGornaY
-  = (node [przeszkodaDolna przeszkodaGornaY, szczelina wysokoscBohatera, przeszkodaGorna przeszkodaGornaY])
-    { nodePosition         = Point (szerokoscSceny + szerokoscGornejPrzeszkody) 0
-    , nodeZPosition        = -10
+stworzParePrzeszkod wysokoscBohatera przeszkodaPrawaX
+  = (node [przeszkodaLewa przeszkodaPrawaX, szczelina wysokoscBohatera, przeszkodaPrawa przeszkodaPrawaX])
+    { nodePosition         = Point 0 (wysokoscSceny + wysokoscPrawejPrzeszkody) 
+    , nodeZPosition        = 5 --powinno być -10
     , nodeActionDirectives = [przesuwajPrzeszkodyIUsunJe]
     }
   where
     przesuwajPrzeszkodyIUsunJe = runAction $ --przesuwa przeszkody przez scene, po opuszczeniu sceny usuwa przeszkody
-                           sequenceActions [ (moveBy $ Vector (-oIlePrzesunac) 0) --o ile przesunąć przeszkody
+                           sequenceActions [ (moveBy $ Vector 0 (-oIlePrzesunac)) --o ile przesunąć przeszkody
                                              { actionDuration = 0.005 * oIlePrzesunac } --czas trwania akcji (domyślnie 0.005 * oIlePrzesunac)
                                            , removeFromParent --usun przeszkody ze sceny
                                            ]
-    oIlePrzesunac     = szerokoscSceny + szerokoscGornejPrzeszkody
-    przeszkodaDolna przeszkodaGornaY   = stworzPrzeszkode teksturaDolnejPrzeszkody 
-                              (przeszkodaGornaY + wysokoscDolnejPrzeszkody + wysokoscSzczeliny)
-                              szerokoscDolnejPrzeszkody
-                              wysokoscDolnejPrzeszkody
-    przeszkodaGorna przeszkodaGornaY     = stworzPrzeszkode teksturaGornejPrzeszkody 
-                              przeszkodaGornaY
-                              szerokoscGornejPrzeszkody
-                              wysokoscGornejPrzeszkody
+    oIlePrzesunac     = szerokoscSceny + szerokoscPrawejPrzeszkody
+    przeszkodaLewa przeszkodaPrawaX   = stworzPrzeszkode teksturaLewejPrzeszkody 
+                              (przeszkodaPrawaX + szerokoscLewejPrzeszkody + szerokoscSzczeliny)
+                              szerokoscLewejPrzeszkody
+                              wysokoscLewejPrzeszkody
+    przeszkodaPrawa przeszkodaPrawaX     = stworzPrzeszkode teksturaPrawejPrzeszkody 
+                              przeszkodaPrawaX
+                              szerokoscPrawejPrzeszkody
+                              wysokoscPrawejPrzeszkody
 
 -- Zwraca przeszkodę o określonej (teksturze, pozycji y, szerokości, wysokości)
 stworzPrzeszkode :: Texture -> GFloat -> GFloat -> GFloat -> LambdaNode
-stworzPrzeszkode texture y width height
+stworzPrzeszkode texture x szerokosc wysokosc
   = (spriteWithTexture texture) --dwuwymiarowy obrazek z teksturą
-    { nodePosition    = Point 0 y --pozycja przeszkody
-    , nodePhysicsBody = Just $ (bodyWithRectangleOfSize (Size width height) Nothing) --nowy obiekt prostokątny o wymiarach width, height
+    { nodePosition    = Point x 300 --pozycja przeszkody
+    , nodePhysicsBody = Just $ (bodyWithRectangleOfSize (Size szerokosc wysokosc) Nothing) --nowy obiekt prostokątny o wymiarach width, height
                                { bodyIsDynamic          = False
                                , bodyCategoryBitMask    = categoryBitMask [Swiat] --przypisanie kategorii BitMask
                                , bodyContactTestBitMask = categoryBitMask [Bohater]  --przypisanie kontaktu z kategorią BitMask
@@ -63,8 +63,8 @@ stworzPrzeszkode texture y width height
 szczelina :: GFloat -> LambdaNode
 szczelina wysokoscBohatera
   = (node [])
-    { nodePosition    = Point (szerokoscDolnejPrzeszkody / 2 + wysokoscBohatera / 2) (wysokoscSceny / 2)
-    , nodePhysicsBody = Just $ (bodyWithEdgeFromPointToPoint (Point 0 0) (Point 0 wysokoscSceny))
+    { nodePosition    = Point (wysokoscSceny / 2) (szerokoscLewejPrzeszkody / 2 + wysokoscBohatera / 2) 
+    , nodePhysicsBody = Just $ (bodyWithEdgeFromPointToPoint (Point 0 wysokoscSceny) (Point 0 0))
                                { bodyCategoryBitMask    = categoryBitMask [Wynik]
                                , bodyContactTestBitMask = categoryBitMask [Bohater]
                                }
