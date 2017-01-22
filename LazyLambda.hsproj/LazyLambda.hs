@@ -38,7 +38,7 @@ rocket = (spriteWithTexture rocket1Texture)
        , nodeZRotation        = 0.003 --rotacja o x radianów wzgl. osi z (1 radian około 60stopni)
        , nodePhysicsBody      
            = Just $
-               (bodyWithTextureSize rocket1Texture Nothing (Size (szerokoscBohatera) (wysokoscBohatera))) --tworzy kołowy obiekt fizyczny o poromieniu r (obserwacja: im mniejsze r tym mniejsza masa)
+               (bodyWithTextureSize rocket1Texture Nothing (Size (szerokoscBohatera) (wysokoscBohatera))) --tworzy obiekt fizyczny na podstawie tekstury
                { bodyCategoryBitMask    = categoryBitMask [Bohater] --[Bohater] - należy do Enuma zdefiniowanego w Constants
                , bodyCollisionBitMask   = categoryBitMask [Swiat]
                , bodyContactTestBitMask = categoryBitMask [Swiat, Wynik]

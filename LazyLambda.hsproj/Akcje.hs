@@ -13,7 +13,7 @@ akcjaPodskok sprite@Sprite{ nodePhysicsBody = Just body } _dt
     { nodePhysicsBody
         = Just body
                {bodyVelocity          = vectorZero, -- Prędkość równa 0 (lub Vector 0 0)
-                bodyForcesAndImpulses = [ApplyImpulse (Vector 0 800) Nothing] --podnosi o x do góry
+                bodyForcesAndImpulses = [ApplyImpulse (Vector 0 (2*silaSkretu)) Nothing] --podnosi o x do góry
                }
     }
 bumpAction node _dt = node

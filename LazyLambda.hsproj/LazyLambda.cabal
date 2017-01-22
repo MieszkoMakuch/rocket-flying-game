@@ -13,14 +13,19 @@ category: Games
 author: Manuel M T Chakravarty
 data-files:
     scoreboard.png
+    Rocket-03-T.png
     Sky.png
-    PipeUp.png
     Land.png
-    Bird-01.png
     Bird-02.png
     Bird-03.png
-    LICENSE.md
+    stone2.png
+    stone1.png
+    Rocket-01-T.png
+    PipeUp.png
     PipeDown.png
+    Bird-01.png
+    LICENSE.md
+    Rocket-02-T.png
 x-ghc-framework-version: 7.10.3-5.9-2
 x-last-ide-version: HfM1.3.0
 Executable LazyLambda
