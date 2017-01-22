@@ -18,7 +18,7 @@ umiescParePrzeskod szerokoscBohatera pipes _dt
     , nodeUserData = pipeState'
     }
   where
-    maksymalneOdchylenie = round (szerokoscSceny) -- maksymalna różnica między pozycjami przeszkód 
+    maksymalneOdchylenie = round (1.5*szerokoscSceny) -- maksymalna różnica między pozycjami przeszkód 
     (pipeState', i) = randomInt (nodeUserData pipes)
     przeszkodaPrawaX         = fromIntegral $ 0 + (i `mod` maksymalneOdchylenie) `div` 2 --losowa pozycja górnej przeszkody
 

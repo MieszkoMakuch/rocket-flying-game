@@ -8,43 +8,42 @@ import FunkcjePomocnicze
 import StanGry
   
 
-(groundTexture, groundTileWidth, groundTileHeight) = stworzTeksture "saw.png"
+(teksturaOstrzy, szerokoscOstrzy, wysokoscOstrzy) = stworzTeksture "saw.png"
 
-groundSprites :: [LambdaNode]
-groundSprites = [ (spriteWithTexture groundTexture)
-                  { nodePosition         = Point x (groundTileHeight / 2)
-                  , nodeXScale           = 2--4.5
-                  , nodeYScale           = 2--4.5
-                  , nodeActionDirectives = [groundMovement]
+ostrza :: [LambdaNode]
+ostrza = [ (spriteWithTexture teksturaOstrzy)
+                  { nodePosition         = Point x (wysokoscOstrzy / 2)
+                  , nodeXScale           = 2
+                  , nodeYScale           = 2
+                  , nodeActionDirectives = [ruchOstrzy]
                   }
-                | x <- [0, 2*groundTileWidth..2*szerokoscSceny + 2*groundTileWidth]]
+                | x <- [0, 2*szerokoscOstrzy..2*szerokoscSceny + 2*szerokoscOstrzy]]
   where
-    movementDuration = 0.005 * groundTileWidth
-    groundMovement   = odtwarzajListeAkcjiWNieskonczonosc
-                       [ (moveBy $ Vector (-2*groundTileWidth) 0)  -- move
+    movementDuration = 0.009 * szerokoscOstrzy
+    ruchOstrzy   = odtwarzajListeAkcjiWNieskonczonosc
+                       [ (moveBy $ Vector (-2*szerokoscOstrzy) 0)  --przenieś
                          { actionDuration = movementDuration }
-                       , (moveBy $ Vector (2*groundTileWidth) 0)     -- reset
+                       , (moveBy $ Vector (2*szerokoscOstrzy) 0)   --zresetuj
                          { actionDuration = 0 }
                        ]
 
-(skyTexture, skyTileWidth, skyTileHeight) = stworzTeksture "spaceBG.jpg"
+(teksturaKosmosu, szerokoscKosmosu, wysokoscKosmosu) = stworzTeksture "spaceBG.jpg"
 
-skySprites :: [LambdaNode]
-skySprites = [ (spriteWithTexture skyTexture)
-               { nodePosition         = Point (skyWidth/2) y
+kosmos :: [LambdaNode]
+kosmos = [ (spriteWithTexture teksturaKosmosu)
+               { nodePosition         = Point (szerokoscSceny/2) y
                , nodeZPosition        = -20
-               , nodeXScale           = 1.1--4.5
-               , nodeYScale           = 1.1--4.5
-               , nodeActionDirectives = [skyMovement]
+               , nodeXScale           = 1.1
+               , nodeYScale           = 1.1
+               , nodeActionDirectives = [ruchKosmosu]
                }
-             | y <- [0, 1.1*skyTileHeight..1.1*(wysokoscSceny + skyTileHeight)]]
+             | y <- [0, 1.1*wysokoscKosmosu..1.1*(wysokoscSceny + wysokoscKosmosu)]]
   where
-    skyWidth        = szerokoscSceny --(skyTileWidth / 2) + groundTileHeight
-    movementDuration = 0.045 * skyTileHeight
-    skyMovement      = odtwarzajListeAkcjiWNieskonczonosc
-                       [ (moveBy $ Vector 0 (-1.1*skyTileHeight))   -- move
-                         { actionDuration = movementDuration }
-                       , (moveBy $ Vector 0 (1.1*skyTileHeight))      -- reset
+    czasRuchu = 0.045 * wysokoscKosmosu
+    ruchKosmosu      = odtwarzajListeAkcjiWNieskonczonosc
+                       [ (moveBy $ Vector 0 (-1.1*wysokoscKosmosu)) --przenieś
+                         { actionDuration = czasRuchu }
+                       , (moveBy $ Vector 0 (1.1*wysokoscKosmosu))  --zresetuj
                          { actionDuration = 0 }
                        ]
 

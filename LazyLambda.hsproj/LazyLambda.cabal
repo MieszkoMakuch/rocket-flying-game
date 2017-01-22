@@ -22,7 +22,7 @@ data-files:
 x-ghc-framework-version: 7.10.3-5.9-2
 x-last-ide-version: HfM1.3.0
 Executable LazyLambda
-  main-is: LazyLambda.hs
+  main-is: Main.hs
   buildable: True
   build-depends:
       base -any,

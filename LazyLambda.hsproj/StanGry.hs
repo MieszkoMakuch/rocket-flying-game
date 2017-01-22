@@ -3,36 +3,36 @@ module StanGry where
 import Graphics.SpriteKit
 
   
-data NodeState = PipesState [Int]      -- unbound sequence of random numbers
+data StanObiektu = StanPrzeszkod [Int]      -- unbound sequence of random numbers
                | NoState
 
-type LambdaNode = Node NodeState
+type LambdaNode = Node StanObiektu
 
-randomInt :: NodeState -> (NodeState, Int)
+randomInt :: StanObiektu -> (StanObiektu, Int)
 randomInt NoState             = (NoState, 0)
-randomInt (PipesState (i:is)) = (PipesState is, i)
+randomInt (StanPrzeszkod (i:is)) = (StanPrzeszkod is, i)
 
 
-data GameState = Running | Crash | Over
+data StanGry = WTrakcieGry | Wypadek | Koniec
                deriving Eq
 
-data SceneState = SceneState 
+data StanSceny = StanSceny 
                  { sceneScore :: Int
                  , keyPressed :: Bool
                  , leftKeyPressed :: Bool
                  , rightKeyPressed :: Bool
                  , bumpScore  :: Bool
-                 , gameState  :: GameState
+                 , gameState  :: StanGry
                  }
 
 initialSceneState 
-  = SceneState 
+  = StanSceny 
     { sceneScore = 0
     , keyPressed = False 
     , leftKeyPressed = False 
     , rightKeyPressed = False 
     , bumpScore  = False 
-    , gameState  = Running
+    , gameState  = WTrakcieGry
     }
 
-type LambdaScene = Scene SceneState NodeState
+type LambdaScene = Scene StanSceny StanObiektu
