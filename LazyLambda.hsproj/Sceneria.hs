@@ -25,24 +25,24 @@ groundSprites = [ (spriteWithTexture groundTexture)
                          { actionDuration = 0 }
                        ]
 
-(skyTexture, skyTileWidth, skyTileHeight) = stworzTeksture "Sky.png"
+(skyTexture, skyTileWidth, skyTileHeight) = stworzTeksture "spaceBG.jpg"
 
 skySprites :: [LambdaNode]
 skySprites = [ (spriteWithTexture skyTexture)
-               { nodePosition         = Point x skyHeight
+               { nodePosition         = Point (skyWidth/2) y
                , nodeZPosition        = -20
-               , nodeXScale           = 2
-               , nodeYScale           = 2
+               , nodeXScale           = 4.5
+               , nodeYScale           = 4.5
                , nodeActionDirectives = [skyMovement]
                }
-             | x <- [0, skyTileWidth..szerokoscSceny + skyTileWidth]]
+             | y <- [0, 4.5*skyTileHeight..4.5*(wysokoscSceny + skyTileHeight)]]
   where
-    skyHeight        = (skyTileHeight / 2) + groundTileHeight
-    movementDuration = 0.025 * skyTileWidth
+    skyWidth        = szerokoscSceny --(skyTileWidth / 2) + groundTileHeight
+    movementDuration = 0.015 * skyTileHeight
     skyMovement      = odtwarzajListeAkcjiWNieskonczonosc
-                       [ (moveBy $ Vector (-skyTileWidth) 0)   -- move
+                       [ (moveBy $ Vector 0 (-4.5*skyTileHeight))   -- move
                          { actionDuration = movementDuration }
-                       , (moveBy $ Vector skyTileWidth 0)      -- reset
+                       , (moveBy $ Vector 0 (4.5*skyTileHeight))      -- reset
                          { actionDuration = 0 }
                        ]
 

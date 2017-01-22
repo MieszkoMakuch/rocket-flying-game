@@ -65,7 +65,7 @@ pipes :: LambdaNode
 pipes = (node [])
         { nodeActionDirectives = [odtwarzajListeAkcjiWNieskonczonosc 
                                   [ customAction (umiescParePrzeskod szerokoscBohatera)
-                                  , waitForDuration{ actionDuration = 1.5 } --w sekundach
+                                  , waitForDuration{ actionDuration = 3 } --w sekundach
                                   ] ]
         , nodeUserData         = PipesState generujLosowaLiczbe 
         }

@@ -8,7 +8,7 @@ import Data.Word
 
 -- Wymiary sceny
 szerokoscSceny, wysokoscSceny :: GFloat
-szerokoscSceny  = 900
+szerokoscSceny  = 850
 wysokoscSceny = 1200
 
 -- Wysokość szczeliny przez którą musi przeleciec bohater

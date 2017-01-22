@@ -18,7 +18,7 @@ umiescParePrzeskod wysokoscBohatera pipes _dt
     , nodeUserData = pipeState'
     }
   where
-    maksymalneOdchylenie = round (szerokoscSceny / 1.5) -- maksymalna różnica między pozycjami przeszkód 
+    maksymalneOdchylenie = round (szerokoscSceny) -- maksymalna różnica między pozycjami przeszkód 
     (pipeState', i) = randomInt (nodeUserData pipes)
     przeszkodaPrawaX         = fromIntegral $ 0 + (i `mod` maksymalneOdchylenie) `div` 2 --losowa pozycja górnej przeszkody
 
@@ -28,7 +28,7 @@ stworzParePrzeszkod :: GFloat -> GFloat -> LambdaNode
 stworzParePrzeszkod wysokoscBohatera przeszkodaPrawaX
   = (node [przeszkodaLewa przeszkodaPrawaX, szczelina wysokoscBohatera, przeszkodaPrawa przeszkodaPrawaX])
     { nodePosition         = Point 0 (wysokoscSceny + wysokoscPrawejPrzeszkody) 
-    , nodeZPosition        = 5 --powinno być -10
+    , nodeZPosition        = -10 --powinno być -10
     , nodeActionDirectives = [przesuwajPrzeszkodyIUsunJe]
     }
   where
@@ -37,7 +37,7 @@ stworzParePrzeszkod wysokoscBohatera przeszkodaPrawaX
                                              { actionDuration = 0.005 * oIlePrzesunac } --czas trwania akcji (domyślnie 0.005 * oIlePrzesunac)
                                            , removeFromParent --usun przeszkody ze sceny
                                            ]
-    oIlePrzesunac     = wysokoscSceny + wysokoscPrawejPrzeszkody
+    oIlePrzesunac     = wysokoscSceny + (2*wysokoscPrawejPrzeszkody)
     przeszkodaLewa przeszkodaPrawaX   = stworzPrzeszkode teksturaLewejPrzeszkody 
                               (przeszkodaPrawaX + szerokoscLewejPrzeszkody + szerokoscSzczeliny)
                               szerokoscLewejPrzeszkody
