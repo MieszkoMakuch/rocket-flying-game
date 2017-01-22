@@ -8,20 +8,22 @@ import FunkcjePomocnicze
 import StanGry
   
 
-(groundTexture, groundTileWidth, groundTileHeight) = stworzTeksture "Land.png"
+(groundTexture, groundTileWidth, groundTileHeight) = stworzTeksture "saw.png"
 
 groundSprites :: [LambdaNode]
 groundSprites = [ (spriteWithTexture groundTexture)
                   { nodePosition         = Point x (groundTileHeight / 2)
+                  , nodeXScale           = 2--4.5
+                  , nodeYScale           = 2--4.5
                   , nodeActionDirectives = [groundMovement]
                   }
-                | x <- [0, groundTileWidth..szerokoscSceny + groundTileWidth]]
+                | x <- [0, 2*groundTileWidth..2*szerokoscSceny + 2*groundTileWidth]]
   where
     movementDuration = 0.005 * groundTileWidth
     groundMovement   = odtwarzajListeAkcjiWNieskonczonosc
-                       [ (moveBy $ Vector (-groundTileWidth) 0)  -- move
+                       [ (moveBy $ Vector (-2*groundTileWidth) 0)  -- move
                          { actionDuration = movementDuration }
-                       , (moveBy $ Vector groundTileWidth 0)     -- reset
+                       , (moveBy $ Vector (2*groundTileWidth) 0)     -- reset
                          { actionDuration = 0 }
                        ]
 
@@ -31,18 +33,18 @@ skySprites :: [LambdaNode]
 skySprites = [ (spriteWithTexture skyTexture)
                { nodePosition         = Point (skyWidth/2) y
                , nodeZPosition        = -20
-               , nodeXScale           = 4.5
-               , nodeYScale           = 4.5
+               , nodeXScale           = 1.1--4.5
+               , nodeYScale           = 1.1--4.5
                , nodeActionDirectives = [skyMovement]
                }
-             | y <- [0, 4.5*skyTileHeight..4.5*(wysokoscSceny + skyTileHeight)]]
+             | y <- [0, 1.1*skyTileHeight..1.1*(wysokoscSceny + skyTileHeight)]]
   where
     skyWidth        = szerokoscSceny --(skyTileWidth / 2) + groundTileHeight
     movementDuration = 0.045 * skyTileHeight
     skyMovement      = odtwarzajListeAkcjiWNieskonczonosc
-                       [ (moveBy $ Vector 0 (-4.5*skyTileHeight))   -- move
+                       [ (moveBy $ Vector 0 (-1.1*skyTileHeight))   -- move
                          { actionDuration = movementDuration }
-                       , (moveBy $ Vector 0 (4.5*skyTileHeight))      -- reset
+                       , (moveBy $ Vector 0 (1.1*skyTileHeight))      -- reset
                          { actionDuration = 0 }
                        ]
 

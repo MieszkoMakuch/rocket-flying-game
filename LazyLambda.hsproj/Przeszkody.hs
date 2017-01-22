@@ -12,9 +12,9 @@ import StanGry
 (teksturaLewejPrzeszkody, szerokoscLewejPrzeszkody, wysokoscLewejPrzeszkody) = stworzTeksture "stone2.png"
 
 umiescParePrzeskod :: GFloat -> LambdaNode -> TimeInterval -> LambdaNode
-umiescParePrzeskod wysokoscBohatera pipes _dt
+umiescParePrzeskod szerokoscBohatera pipes _dt
   = pipes
-    { nodeChildren = stworzParePrzeszkod wysokoscBohatera przeszkodaPrawaX : nodeChildren pipes 
+    { nodeChildren = stworzParePrzeszkod szerokoscBohatera przeszkodaPrawaX : nodeChildren pipes 
     , nodeUserData = pipeState'
     }
   where
@@ -25,8 +25,8 @@ umiescParePrzeskod wysokoscBohatera pipes _dt
 -- Zwraca parę przeszkód ze szczeliną pomiędzy jako lista obiektów (przeszkodaLewa, szczelina, przeszkodaPrawa)
 -- Przyjmuje wysokość bohatera i pozycje górnej przeszkody
 stworzParePrzeszkod :: GFloat -> GFloat -> LambdaNode
-stworzParePrzeszkod wysokoscBohatera przeszkodaPrawaX
-  = (node [przeszkodaLewa przeszkodaPrawaX, szczelina wysokoscBohatera, przeszkodaPrawa przeszkodaPrawaX])
+stworzParePrzeszkod szerokoscBohatera przeszkodaPrawaX
+  = (node [przeszkodaLewa przeszkodaPrawaX, szczelina szerokoscBohatera, przeszkodaPrawa przeszkodaPrawaX])
     { nodePosition         = Point 0 (wysokoscSceny + wysokoscPrawejPrzeszkody) 
     , nodeZPosition        = -10 --powinno być -10
     , nodeActionDirectives = [przesuwajPrzeszkodyIUsunJe]
@@ -61,10 +61,10 @@ stworzPrzeszkode texture x szerokosc wysokosc
 
 -- Liczy punkt jeśli 
 szczelina :: GFloat -> LambdaNode
-szczelina wysokoscBohatera
+szczelina szerokoscBohatera
   = (node [])
-    { nodePosition    = Point (wysokoscSceny / 2) (szerokoscLewejPrzeszkody / 2 + wysokoscBohatera / 2) 
-    , nodePhysicsBody = Just $ (bodyWithEdgeFromPointToPoint (Point 0 wysokoscSceny) (Point 0 0))
+    { nodePosition    = Point (szerokoscSceny / 2) (wysokoscLewejPrzeszkody / 2 + szerokoscBohatera / 2) 
+    , nodePhysicsBody = Just $ (bodyWithEdgeFromPointToPoint (Point 0 0) (Point szerokoscSceny 0))
                                { bodyCategoryBitMask    = categoryBitMask [Wynik]
                                , bodyContactTestBitMask = categoryBitMask [Bohater]
                                }

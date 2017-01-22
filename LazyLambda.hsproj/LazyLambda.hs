@@ -64,7 +64,7 @@ groundPhysics = (node [])
 pipes :: LambdaNode
 pipes = (node [])
         { nodeActionDirectives = [odtwarzajListeAkcjiWNieskonczonosc 
-                                  [ customAction (umiescParePrzeskod szerokoscBohatera)
+                                  [ customAction (umiescParePrzeskod wysokoscBohatera)
                                   , waitForDuration{ actionDuration = 3 } --w sekundach
                                   ] ]
         , nodeUserData         = PipesState generujLosowaLiczbe 

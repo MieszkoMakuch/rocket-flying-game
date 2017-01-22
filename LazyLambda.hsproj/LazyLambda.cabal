@@ -12,20 +12,12 @@ description:
 category: Games
 author: Manuel M T Chakravarty
 data-files:
-    scoreboard.png
+    Saw.png
+    stone1.png
     Rocket-03-T.png
     spaceBG.jpg
-    Sky.png
-    Land.png
-    Bird-02.png
-    Bird-03.png
-    stone2.png
-    stone1.png
     Rocket-01-T.png
-    PipeUp.png
-    PipeDown.png
-    Bird-01.png
-    LICENSE.md
+    stone2.png
     Rocket-02-T.png
 x-ghc-framework-version: 7.10.3-5.9-2
 x-last-ide-version: HfM1.3.0
