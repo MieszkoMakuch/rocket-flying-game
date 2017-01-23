@@ -138,7 +138,7 @@ crash scene
 incScore :: LambdaScene -> LambdaScene 
 incScore scene@Scene{ sceneData = sceneState }
   = scene
-    { sceneActionDirectives = [odtworzWlasnaAkcjeNa "Score" setScore]
+    { sceneActionDirectives = [odtworzWlasnaAkcjeNa "Wynik" setScore]
     , sceneData             = sceneState{ sceneScore = newScore }
     }
   where
