@@ -1,16 +1,14 @@
-name: LazyLambda
+name: RocketFlyingGame
 version: 1.0
 cabal-version: 1.11
 build-type: Simple
 license: MIT
 license-file: LICENSE.md
-copyright: 2016 Applicative
+copyright: 2017 Applicative
 stability: experimental
-synopsis: A Flappy Bird clone
-description:
-    This project was inspired by https://github.com/fullstackio/FlappySwift and is also based on the graphics assets of the Swift version.
+synopsis: Rocket Flying Game
 category: Games
-author: Manuel M T Chakravarty
+author: Mieszko Makuch
 data-files:
     Saw.png
     stone1.png
