@@ -30,7 +30,7 @@ rocketFlying
 (rocket2Texture, _, _)                                = stworzTeksture "Rocket-02-T.png"
 (rocket3Texture, _, _)                                = stworzTeksture "Rocket-03-T.png"
 
--- Obiekt fizyczny rakieta stworzony na podstawie tekstury, ustawiony w odpowienim miejscu, 
+-- | Obiekt fizyczny rakieta stworzony na podstawie tekstury, ustawiony w odpowienim miejscu, 
 -- animowany z wykorzystaniem zdefiniowanych tekstur
 rakieta :: LambdaNode
 rakieta = (spriteWithTexture rocket1Texture)
@@ -77,10 +77,12 @@ przeszkody = (node [])
 
 -- Pole z aktualnym wynikiem gracza
 wynik :: LambdaNode
-wynik = (labelNodeWithFontNamed "MarkerFelt-Wide")
+wynik = (labelNodeWithFontNamed "Verdana")
         { nodeName      = Just "Wynik"
-        , nodePosition  = Point (szerokoscSceny / 2) (3 * wysokoscSceny / 4)
+        , nodePosition  = Point (szerokoscSceny / 2) (4 * wysokoscSceny / 5)
         , nodeZPosition = 100
+        , nodeXScale = 3
+        , nodeYScale = 3
         , labelText     = "0"
         }
 
