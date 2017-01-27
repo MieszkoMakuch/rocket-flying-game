@@ -38,6 +38,9 @@ jestSwiatem = jestObiektemFizycznym Swiat
 jestWynikiem :: Node u -> Bool
 jestWynikiem = jestObiektemFizycznym Wynik
 
+jestBohaterem :: Node u -> Bool
+jestBohaterem = jestObiektemFizycznym Bohater
+
 -- Kolor nieba
 kolorNieba :: Color
 kolorNieba = colorWithRGBA (81.0/255.0)

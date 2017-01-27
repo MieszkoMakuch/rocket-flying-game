@@ -24,13 +24,17 @@ Executable RocketFlyingGame
   buildable: True
   build-depends:
       base -any,
+      QuickCheck -any,
       spritekit -any,
+      HUnit -any,
       random -any
   other-modules:
       Akcje
       LosoweLiczby
       Przeszkody
       Stale
+      TestyQuickCheck
       Sceneria
       StanGry
       FunkcjePomocnicze
+      TestyHUnit
