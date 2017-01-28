@@ -22,7 +22,7 @@ jestBohateremTest1 = TestCase (assertEqual "przykladowyBohater jest bohaterem" T
                      
 tests = TestList [TestLabel "test1" jestSwiatemTest1, TestLabel "test2" jestWynikiemTest1, TestLabel "test2" jestWynikiemTest2,TestLabel "test2" jestBohateremTest1]
 
--- Definicje Mock objeków:
+-- | Definicje Mock objeków:
 
 -- | Przykladowy LambdaNode typu Swiat
 przykladowySwiat :: LambdaNode

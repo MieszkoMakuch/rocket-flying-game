@@ -3,7 +3,7 @@ module StanGry where
 import Graphics.SpriteKit
 
   
-data StanObiektu = StanPrzeszkod [Int]      -- unbound sequence of random numbers
+data StanObiektu = StanPrzeszkod [Int]
                | NoState
 
 type LambdaNode = Node StanObiektu

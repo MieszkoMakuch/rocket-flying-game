@@ -13,6 +13,7 @@ import Sceneria
 
 rocketFlying :: LambdaScene
 
+-- | Główna scena gry
 rocketFlying
   = (sceneWithSize (Size szerokoscSceny wysokoscSceny))
     { sceneBackgroundColor  = kolorNieba
@@ -31,7 +32,7 @@ rocketFlying
 (rocket3Texture, _, _)                                = stworzTeksture "Rocket-03-T.png"
 
 -- | Obiekt fizyczny rakieta stworzony na podstawie tekstury, ustawiony w odpowienim miejscu, 
--- animowany z wykorzystaniem zdefiniowanych tekstur
+-- | animowany z wykorzystaniem zdefiniowanych tekstur
 rakieta :: LambdaNode
 rakieta = (spriteWithTexture rocket1Texture)
        { nodeName             = Just "Lambda"
@@ -50,12 +51,12 @@ rakieta = (spriteWithTexture rocket1Texture)
     animujBohatera = animateWithTextures --Definicja akcji flap - machanie skrzydłami
              [rocket1Texture, rocket2Texture, rocket3Texture, rocket2Texture] 0.1 --[ zdjecie 1, zdjecie 2, zdjecie 3, zdjecie 2] co x sekund
 
--- Lista poruszających się po scenie obiektów 
+-- | Lista poruszających się po scenie obiektów 
 poruszajaceSieObiekty :: LambdaNode
 poruszajaceSieObiekty = (node $ przeszkody : ostrza ++ kosmos)
               { nodeName = Just "ObiektyWRuchu" }
 
--- Właściwości fizyczne opisujące ostrza
+-- | Właściwości fizyczne opisujące ostrza
 fizykaOstrzy :: LambdaNode
 fizykaOstrzy = (node [])
                 { nodePosition    = Point 0 (wysokoscOstrzy / 2)
@@ -65,7 +66,7 @@ fizykaOstrzy = (node [])
                     { bodyCategoryBitMask = categoryBitMask [Swiat] }
                 }
 
--- Stwórz i przesuwaj przeszkody po scenie
+-- | Stwórz i przesuwaj przeszkody po scenie
 przeszkody :: LambdaNode
 przeszkody = (node [])
         { nodeActionDirectives = [odtwarzajListeAkcjiWNieskonczonosc 
@@ -75,7 +76,7 @@ przeszkody = (node [])
         , nodeUserData         = StanPrzeszkod generujLosowaLiczbe 
         }
 
--- Pole z aktualnym wynikiem gracza
+-- | Pole z aktualnym wynikiem gracza
 wynik :: LambdaNode
 wynik = (labelNodeWithFontNamed "Verdana")
         { nodeName      = Just "Wynik"
@@ -86,7 +87,7 @@ wynik = (labelNodeWithFontNamed "Verdana")
         , labelText     = "0"
         }
 
--- Aktualizuje scene na podstawie zdarzeń i aktualnego stanu gry
+-- | Aktualizuje scene na podstawie zdarzeń i aktualnego stanu gry
 update :: LambdaScene -> TimeInterval -> LambdaScene
 update scene@Scene{ sceneData = sceneState@StanSceny{..} } _dt 
   = case gameState of
@@ -95,31 +96,25 @@ update scene@Scene{ sceneData = sceneState@StanSceny{..} } _dt
         | leftKeyPressed -> lewySkretLambda scene{ sceneData = sceneState{ leftKeyPressed = False } }
         | rightKeyPressed -> prawySkretLambda scene{ sceneData = sceneState{ rightKeyPressed = False } }
         | bumpScore  -> incScore scene{ sceneData = sceneState{ bumpScore = False } }
-        | otherwise  -> tiltLambda scene
       Wypadek        -> crash scene{ sceneData = sceneState{ gameState = Koniec } }
       Koniec         -> scene
 
--- Przyspiesza rakiete (podskok)
+-- | Przyspiesza rakiete (podskok)
 przyspieszLambda :: LambdaScene -> LambdaScene
 przyspieszLambda scene
   = scene { sceneActionDirectives = [odtworzWlasnaAkcjeNa "Lambda" akcjaPodskok] }
   
--- Skręca rakiete w lewo
+-- | Skręca rakiete w lewo
 lewySkretLambda :: LambdaScene -> LambdaScene
 lewySkretLambda scene
   = scene { sceneActionDirectives = [odtworzWlasnaAkcjeNa "Lambda" akcjaLewySkret] }
  
--- Skręca rakiete w prawo
+-- | Skręca rakiete w prawo
 prawySkretLambda :: LambdaScene -> LambdaScene
 prawySkretLambda scene
   = scene { sceneActionDirectives = [odtworzWlasnaAkcjeNa "Lambda" akcjaPrawySkret] }
 
--- Pochyla rakiete
-tiltLambda :: LambdaScene -> LambdaScene
-tiltLambda scene 
-  = scene{ sceneActionDirectives = [odtworzWlasnaAkcjeNa "Lambda" akcjaPrzechyl] }
-
--- Zderzenie rakiety z obiektem fizycznym
+-- | Zderzenie rakiety z obiektem fizycznym
 crash :: LambdaScene -> LambdaScene
 crash scene
   = scene { sceneActionDirectives = [ odtworzAkcjeNa "Lambda" crashAction
@@ -158,7 +153,7 @@ contact state@StanSceny{..} PhysicsContact{..}
   | otherwise
   = (Nothing, Nothing, Nothing)  
 
--- Obsługa eventów (naciskanie klawiszy)
+-- | Obsługa eventów (naciskanie klawiszy)
 handleEvent :: Event -> StanSceny -> Maybe StanSceny
 handleEvent KeyEvent{ keyEventType = KeyDown } state = Just state{ keyPressed = True }
 handleEvent MouseEvent{ mouseEventType = LeftMouseDown } state = Just state{ leftKeyPressed = True }

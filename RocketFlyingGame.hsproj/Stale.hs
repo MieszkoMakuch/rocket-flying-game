@@ -6,16 +6,16 @@ import Data.Bits
 import Data.Word
 
 
--- Wymiary sceny
+-- | Wymiary sceny
 szerokoscSceny, wysokoscSceny :: GFloat
 szerokoscSceny  = 850
 wysokoscSceny = 1200
 
--- Wysokość szczeliny przez którą musi przeleciec bohater
+-- | Wysokość szczeliny przez którą musi przeleciec bohater
 szerokoscSzczeliny :: GFloat
 szerokoscSzczeliny = 150
 
--- Kategorycazja różnych obiektów świata fizycznego (jako enum)
+-- | Kategorycazja różnych obiektów świata fizycznego (jako enum)
 data ObiektyFizyczne = Bohater    -- Lambda
                      | Swiat      -- Przeszkody i grunt
                      | Wynik      -- Scoring nodes
@@ -41,12 +41,12 @@ jestWynikiem = jestObiektemFizycznym Wynik
 jestBohaterem :: Node u -> Bool
 jestBohaterem = jestObiektemFizycznym Bohater
 
--- Kolor nieba
+-- | Kolor nieba
 kolorNieba :: Color
 kolorNieba = colorWithRGBA (81.0/255.0)
                           (192.0/255.0)
                           (201.0/255.0)
                           1.0
--- Siła skrętu
+-- | Siła skrętu
 silaSkretu :: Double
 silaSkretu = 60
