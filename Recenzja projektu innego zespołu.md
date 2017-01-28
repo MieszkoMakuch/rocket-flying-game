@@ -34,4 +34,4 @@ Przy dalszej rozbudowie projektu myślę, że warto byłoby zwrócić uwagę na 
 ## Podsumowanie
 Przegląd projektu innego zespołu pomógł mi zrozumieć jak ważne jest pisanie czytelnego kodu. Programując powinniśmy myśleć osobach, które w przyszłości będą odpowiedzialne za refaktoryzację i utrzymanie naszego kodu.
 
-Myślę, że autorki recenzowanego projektu wzięły to pod uwagę, jest to w mojej ocenie kod czytelny i dobrej jakości. 
+Myślę, że autorki recenzowanego projektu wzięły to pod uwagę, jest to w mojej ocenie kod czytelny i dobrej jakości.
