@@ -12,54 +12,54 @@ import Scenery
 import Main
 
 
-isWorldTest1 = TestCase (assertEqual "przykladowySwiat jest swiatem" True (isWorld przykladowySwiat))
+isWorldTest1 = TestCase (assertEqual "sampleWorld is a World" True (isWorld sampleWorld))
 
-isScoreTest1 = TestCase (assertEqual "przykladowySwiat nie jest wynikiem" False (isScore przykladowySwiat))
-isScoreTest2 = TestCase (assertEqual "przykladowyWynik jest wynikiem" True (isScore przykladowyWynik))
+isScoreTest1 = TestCase (assertEqual "sampleWorld is not a Score" False (isScore sampleWorld))
+isScoreTest2 = TestCase (assertEqual "sampleScore is a Score" True (isScore sampleScore))
 
-isHeroTest1 = TestCase (assertEqual "przykladowyBohater jest bohaterem" True (isHero przykladowyBohater))
+isHeroTest1 = TestCase (assertEqual "sampleRocket is a Rocket" True (isHero sampleRocket))
                      
 tests = TestList [TestLabel "test1" isWorldTest1, TestLabel "test2" isScoreTest1, TestLabel "test2" isScoreTest2,TestLabel "test2" isHeroTest1]
 
--- | Definicje Mock objeków:
+-- | Mock objects definition:
 
--- | Przykladowy LambdaNode typu Swiat
-przykladowySwiat :: LambdaNode
-przykladowySwiat = (node [])
+-- | Sample World
+sampleWorld :: LambdaNode
+sampleWorld = (node [])
                 { nodePosition    = Point 0 (wysokoscOstrzy / 2)
                 , nodePhysicsBody = Just $
                     (bodyWithEdgeFromPointToPoint (Point 0 (wysokoscOstrzy / 2))
-                                                  (Point szerokoscSceny (wysokoscOstrzy / 2)))
-                    { bodyCategoryBitMask = categoryBitMask [Swiat] }
+                                                  (Point sceneWidth (wysokoscOstrzy / 2)))
+                    { bodyCategoryBitMask = categoryBitMask [World] }
                 }
            
 
--- | Przykladowy Bohater
-przykladowyBohater :: LambdaNode
-przykladowyBohater = (spriteWithTexture rocket1Texture)
+-- | Sample Rocket
+sampleRocket :: LambdaNode
+sampleRocket = (spriteWithTexture rocket1Texture)
        { nodeName             = Just "Lambda"
-       , nodePosition         = Point (szerokoscSceny * 0.5) (wysokoscSceny * 0.6)
-       , nodeActionDirectives = [odtwarzajAkcjeWNieskonczonosc animujBohatera]
+       , nodePosition         = Point (sceneWidth * 0.5) (sceneHeight * 0.6)
+       , nodeActionDirectives = [playAcionInLoop animujBohatera]
        , nodeZRotation        = 0
        , nodePhysicsBody      
            = Just $                
                (bodyWithTextureSize rocket1Texture Nothing (Size (szerokoscBohatera) (wysokoscBohatera))) 
-               { bodyCategoryBitMask    = categoryBitMask [Bohater]
-               , bodyCollisionBitMask   = categoryBitMask [Swiat]
-               , bodyContactTestBitMask = categoryBitMask [Swiat, Wynik]
+               { bodyCategoryBitMask    = categoryBitMask [Rocket]
+               , bodyCollisionBitMask   = categoryBitMask [World]
+               , bodyContactTestBitMask = categoryBitMask [World, Score]
                }
        }
   where
-    animujBohatera = animateWithTextures --Definicja akcji flap - machanie skrzydłami
-             [rocket1Texture, rocket2Texture, rocket3Texture, rocket2Texture] 0.1 --[ zdjecie 1, zdjecie 2, zdjecie 3, zdjecie 2] co x sekund
+    animujBohatera = animateWithTextures 
+             [rocket1Texture, rocket2Texture, rocket3Texture, rocket2Texture] 0.1
              
--- | Przykladowy LambdaNode typu Wynik
-przykladowyWynik :: LambdaNode
-przykladowyWynik = (node [])
+-- | Sample Score
+sampleScore :: LambdaNode
+sampleScore = (node [])
                 { nodePosition    = Point 0 (wysokoscOstrzy / 2)
                 , nodePhysicsBody = Just $
                     (bodyWithEdgeFromPointToPoint (Point 0 (wysokoscOstrzy / 2))
-                                                  (Point szerokoscSceny (wysokoscOstrzy / 2)))
-                    { bodyCategoryBitMask = categoryBitMask [Wynik] }
+                                                  (Point sceneWidth (wysokoscOstrzy / 2)))
+                    { bodyCategoryBitMask = categoryBitMask [Score] }
                 }
 

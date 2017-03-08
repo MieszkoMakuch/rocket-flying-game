@@ -7,34 +7,34 @@ import System.IO.Unsafe
 import System.Random
 
 
--- | Stwórz teksturę na podstawie obrazka w podanym pliku, oraz określ
--- | jej szerokość i wysokość na podstawie wymiarow obrazka
-stworzTeksture :: FilePath -> (Texture, GFloat, GFloat)
-stworzTeksture path = (tex, sizeWidth, sizeHeight)
+-- | Create texture based on the provided image path and set its width 
+-- | and height based on the image size
+createTexture :: FilePath -> (Texture, GFloat, GFloat)
+createTexture path = (tex, sizeWidth, sizeHeight)
   where
     tex      = textureWithImageNamed path
     Size{..} = textureSize tex
 
--- | Odtwarza podaną akcję na podanym węźle (child node)
-odtworzAkcjeNa :: String -> Action children -> SDirective node children
-odtworzAkcjeNa childName action 
+-- | Plays a specified action on specified node (child node).
+playActionOn :: String -> Action children -> SDirective node children
+playActionOn childName action 
   = runAction $ runActionOnChildWithName action childName
 
--- | Odtwarza podaną akcję (zdefiniowaną w Akcje.hs) na podanym węźle (child node).
--- | Wykorzystuje funkcje odtworzAkcjeNa
-odtworzWlasnaAkcjeNa :: String -> TimedUpdate children -> SDirective node children
-odtworzWlasnaAkcjeNa childName actionFun 
-  = odtworzAkcjeNa childName $ customAction actionFun
+-- | Plays a custom action (defined in Actions.hs) on the specified node (child node). 
+-- | Uses playAcionOn function.
+playCustomActionOn :: String -> TimedUpdate children -> SDirective node children
+playCustomActionOn childName actionFun 
+  = playActionOn childName $ customAction actionFun
 
--- | Odtwarza podaną akcję w nieskończoność
-odtwarzajAkcjeWNieskonczonosc :: SAction node children -> SDirective node children
-odtwarzajAkcjeWNieskonczonosc = runAction . repeatActionForever
+-- | Plays a specified action in the loop.
+playAcionInLoop :: SAction node children -> SDirective node children
+playAcionInLoop = runAction . repeatActionForever
 
--- | Odtwarza podana liste akcji w nieskonczoność
--- | Wykorzystuje funkcje odtwarzajAkcjeWNieskonczonosc
-odtwarzajListeAkcjiWNieskonczonosc :: [SAction n c] -> SDirective n c
-odtwarzajListeAkcjiWNieskonczonosc = odtwarzajAkcjeWNieskonczonosc . sequenceActions
+-- | Plays specified sequence (list) of actions in the loop. 
+-- | Uses playAcionInLoop function
+playSequenceOfActionsInLoop :: [SAction n c] -> SDirective n c
+playSequenceOfActionsInLoop = playAcionInLoop . sequenceActions
 
--- | Generuje losową liczbę
-generujLosowaLiczbe :: (Random a, Num a) => [a]
-generujLosowaLiczbe = unsafePerformIO $ randoms <$> newStdGen
+-- | Generates a random number
+getRandomNumber :: (Random a, Num a) => [a]
+getRandomNumber = unsafePerformIO $ randoms <$> newStdGen

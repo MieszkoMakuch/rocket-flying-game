@@ -8,7 +8,7 @@ import HelperFunctions
 import GameState
   
 
-(teksturaOstrzy, szerokoscOstrzy, wysokoscOstrzy) = stworzTeksture "saw.png"
+(teksturaOstrzy, szerokoscOstrzy, wysokoscOstrzy) = createTexture "saw.png"
 
 ostrza :: [LambdaNode]
 ostrza = [ (spriteWithTexture teksturaOstrzy)
@@ -20,14 +20,14 @@ ostrza = [ (spriteWithTexture teksturaOstrzy)
                 | x <- [0, 2*szerokoscOstrzy..2*sceneWidth + 2*szerokoscOstrzy]]
   where
     movementDuration = 0.009 * szerokoscOstrzy
-    ruchOstrzy   = odtwarzajListeAkcjiWNieskonczonosc
+    ruchOstrzy   = playSequenceOfActionsInLoop
                        [ (moveBy $ Vector (-2*szerokoscOstrzy) 0)  --przenieś
                          { actionDuration = movementDuration }
                        , (moveBy $ Vector (2*szerokoscOstrzy) 0)   --zresetuj
                          { actionDuration = 0 }
                        ]
 
-(teksturaKosmosu, szerokoscKosmosu, wysokoscKosmosu) = stworzTeksture "spaceBG.jpg"
+(teksturaKosmosu, szerokoscKosmosu, wysokoscKosmosu) = createTexture "spaceBG.jpg"
 
 kosmos :: [LambdaNode]
 kosmos = [ (spriteWithTexture teksturaKosmosu)
@@ -40,7 +40,7 @@ kosmos = [ (spriteWithTexture teksturaKosmosu)
              | y <- [0, 1.1*wysokoscKosmosu..1.1*(sceneHeight + wysokoscKosmosu)]]
   where
     czasRuchu = 0.045 * wysokoscKosmosu
-    ruchKosmosu      = odtwarzajListeAkcjiWNieskonczonosc
+    ruchKosmosu      = playSequenceOfActionsInLoop
                        [ (moveBy $ Vector 0 (-1.1*wysokoscKosmosu)) --przenieś
                          { actionDuration = czasRuchu }
                        , (moveBy $ Vector 0 (1.1*wysokoscKosmosu))  --zresetuj

@@ -3,36 +3,36 @@ module GameState where
 import Graphics.SpriteKit
 
   
-data StanObiektu = StanPrzeszkod [Int]
+data ObjectState = ObstaclesState [Int]
                | NoState
 
-type LambdaNode = Node StanObiektu
+type LambdaNode = Node ObjectState
 
-randomInt :: StanObiektu -> (StanObiektu, Int)
+randomInt :: ObjectState -> (ObjectState, Int)
 randomInt NoState             = (NoState, 0)
-randomInt (StanPrzeszkod (i:is)) = (StanPrzeszkod is, i)
+randomInt (ObstaclesState (i:is)) = (ObstaclesState is, i)
 
 
-data StanGry = WTrakcieGry | Wypadek | Koniec
-               deriving Eq
+data GameState = InGame | Crash | End
+                 deriving Eq
 
-data StanSceny = StanSceny 
+data SceneState = SceneState 
                  { sceneScore :: Int
                  , keyPressed :: Bool
                  , leftKeyPressed :: Bool
                  , rightKeyPressed :: Bool
                  , bumpScore  :: Bool
-                 , gameState  :: StanGry
+                 , gameState  :: GameState
                  }
 
 initialSceneState 
-  = StanSceny 
+  = SceneState 
     { sceneScore = 0
     , keyPressed = False 
     , leftKeyPressed = False 
     , rightKeyPressed = False 
     , bumpScore  = False 
-    , gameState  = WTrakcieGry
+    , gameState  = InGame
     }
 
-type LambdaScene = Scene StanSceny StanObiektu
+type LambdaScene = Scene SceneState ObjectState

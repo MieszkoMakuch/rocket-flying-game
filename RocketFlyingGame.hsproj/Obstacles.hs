@@ -8,8 +8,8 @@ import HelperFunctions
 import GameState
 
 
-(teksturaPrawejPrzeszkody, szerokoscPrawejPrzeszkody, wysokoscPrawejPrzeszkody) = stworzTeksture "stone1.png"
-(teksturaLewejPrzeszkody, szerokoscLewejPrzeszkody, wysokoscLewejPrzeszkody) = stworzTeksture "stone2.png"
+(teksturaPrawejPrzeszkody, szerokoscPrawejPrzeszkody, wysokoscPrawejPrzeszkody) = createTexture "stone1.png"
+(teksturaLewejPrzeszkody, szerokoscLewejPrzeszkody, wysokoscLewejPrzeszkody) = createTexture "stone2.png"
 
 umiescParePrzeskod :: GFloat -> LambdaNode -> TimeInterval -> LambdaNode
 umiescParePrzeskod szerokoscBohatera pipes _dt
@@ -39,7 +39,7 @@ stworzParePrzeszkod szerokoscBohatera przeszkodaPrawaX
                                            ]
     oIlePrzesunac     = sceneHeight + (2*wysokoscPrawejPrzeszkody)
     przeszkodaLewa przeszkodaPrawaX   = stworzPrzeszkode teksturaLewejPrzeszkody 
-                              (przeszkodaPrawaX + szerokoscLewejPrzeszkody + szerokoscSzczeliny)
+                              (przeszkodaPrawaX + szerokoscLewejPrzeszkody + gapSize)
                               szerokoscLewejPrzeszkody
                               wysokoscLewejPrzeszkody
     przeszkodaPrawa przeszkodaPrawaX     = stworzPrzeszkode teksturaPrawejPrzeszkody 
@@ -54,8 +54,8 @@ stworzPrzeszkode texture x szerokosc wysokosc
     { nodePosition    = Point x 300 --pozycja przeszkody
     , nodePhysicsBody = Just $ (bodyWithTextureSize texture Nothing (Size (szerokosc) (wysokosc))) --nowy obiekt prostokątny o wymiarach width, height
                                { bodyIsDynamic          = False
-                               , bodyCategoryBitMask    = categoryBitMask [Swiat] --przypisanie kategorii BitMask
-                               , bodyContactTestBitMask = categoryBitMask [Bohater]  --przypisanie kontaktu z kategorią BitMask
+                               , bodyCategoryBitMask    = categoryBitMask [World] --przypisanie kategorii BitMask
+                               , bodyContactTestBitMask = categoryBitMask [Rocket]  --przypisanie kontaktu z kategorią BitMask
                                }
     }
 
@@ -65,7 +65,7 @@ szczelina szerokoscBohatera
   = (node [])
     { nodePosition    = Point (sceneWidth / 2) (wysokoscLewejPrzeszkody / 2 + szerokoscBohatera / 2) 
     , nodePhysicsBody = Just $ (bodyWithEdgeFromPointToPoint (Point 0 0) (Point sceneWidth 0))
-                               { bodyCategoryBitMask    = categoryBitMask [Wynik]
-                               , bodyContactTestBitMask = categoryBitMask [Bohater]
+                               { bodyCategoryBitMask    = categoryBitMask [Score]
+                               , bodyContactTestBitMask = categoryBitMask [Rocket]
                                }
     }

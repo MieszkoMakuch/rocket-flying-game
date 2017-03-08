@@ -11,36 +11,36 @@ sceneWidth, sceneHeight :: GFloat
 sceneWidth  = 850
 sceneHeight = 1200
 
--- | Wysokość szczeliny przez którą musi przeleciec bohater
-szerokoscSzczeliny :: GFloat
-szerokoscSzczeliny = 150
+-- | Size of the gap between obstacles
+gapSize :: GFloat
+gapSize = 150
 
--- | Kategorycazja różnych obiektów świata fizycznego (jako enum)
-data ObiektyFizyczne = Bohater    -- Lambda
-                     | Swiat      -- Przeszkody i grunt
-                     | Wynik      -- Scoring nodes
+-- | Categorisation of physical objects (as Enum)
+data PhysicalObjects = Rocket    
+                     | World      -- Obstacles and ground
+                     | Score      -- Scoring nodes
                      deriving (Enum)
 
-categoryBitMask :: [ObiektyFizyczne] -> Word32
+categoryBitMask :: [PhysicalObjects] -> Word32
 categoryBitMask = foldl setCategoryBit zeroBits
   where
     setCategoryBit bits cat = bits .|. bit (fromEnum cat)
 
-isPhysicalObject :: ObiektyFizyczne -> Node u -> Bool
-isPhysicalObject obiekt node
+isPhysicalObject :: PhysicalObjects -> Node u -> Bool
+isPhysicalObject object node
   = case nodePhysicsBody node of
-      Just body -> testBit (bodyCategoryBitMask body) (fromEnum obiekt)
+      Just body -> testBit (bodyCategoryBitMask body) (fromEnum object)
       Nothing   -> False
 
 isWorld :: Node u -> Bool
-isWorld = isPhysicalObject Swiat
+isWorld = isPhysicalObject World
 
 isScore :: Node u -> Bool
-isScore = isPhysicalObject Wynik
+isScore = isPhysicalObject Score
 
 isHero :: Node u -> Bool
-isHero = isPhysicalObject Bohater
+isHero = isPhysicalObject Rocket
 
--- | Steering force
+-- | Steering force (left/right turn)
 steeringForce :: Double
 steeringForce = 60.0

@@ -25,9 +25,9 @@ rocketFlying
     , sceneHandleEvent      = Just handleEvent
     }
 
-(rocket1Texture, szerokoscBohatera, wysokoscBohatera) = stworzTeksture "Rocket-01-T.png"
-(rocket2Texture, _, _)                                = stworzTeksture "Rocket-02-T.png"
-(rocket3Texture, _, _)                                = stworzTeksture "Rocket-03-T.png"
+(rocket1Texture, szerokoscBohatera, wysokoscBohatera) = createTexture "Rocket-01-T.png"
+(rocket2Texture, _, _)                                = createTexture "Rocket-02-T.png"
+(rocket3Texture, _, _)                                = createTexture "Rocket-03-T.png"
 
 -- | Obiekt fizyczny rakieta stworzony na podstawie tekstury, ustawiony w odpowienim miejscu, 
 -- | animowany z wykorzystaniem zdefiniowanych tekstur
@@ -35,14 +35,14 @@ rakieta :: LambdaNode
 rakieta = (spriteWithTexture rocket1Texture)
        { nodeName             = Just "Lambda"
        , nodePosition         = Point (sceneWidth * 0.5) (sceneHeight * 0.6)
-       , nodeActionDirectives = [odtwarzajAkcjeWNieskonczonosc animujBohatera]
+       , nodeActionDirectives = [playAcionInLoop animujBohatera]
        , nodeZRotation        = 0
        , nodePhysicsBody      
            = Just $                
                (bodyWithTextureSize rocket1Texture Nothing (Size (szerokoscBohatera) (wysokoscBohatera))) 
-               { bodyCategoryBitMask    = categoryBitMask [Bohater]
-               , bodyCollisionBitMask   = categoryBitMask [Swiat]
-               , bodyContactTestBitMask = categoryBitMask [Swiat, Wynik]
+               { bodyCategoryBitMask    = categoryBitMask [Rocket]
+               , bodyCollisionBitMask   = categoryBitMask [World]
+               , bodyContactTestBitMask = categoryBitMask [World, Score]
                }
        }
   where
@@ -61,17 +61,17 @@ fizykaOstrzy = (node [])
                 , nodePhysicsBody = Just $
                     (bodyWithEdgeFromPointToPoint (Point 0 (wysokoscOstrzy / 2))
                                                   (Point sceneWidth (wysokoscOstrzy / 2)))
-                    { bodyCategoryBitMask = categoryBitMask [Swiat] }
+                    { bodyCategoryBitMask = categoryBitMask [World] }
                 }
 
 -- | Stwórz i przesuwaj przeszkody po scenie
 przeszkody :: LambdaNode
 przeszkody = (node [])
-        { nodeActionDirectives = [odtwarzajListeAkcjiWNieskonczonosc 
+        { nodeActionDirectives = [playSequenceOfActionsInLoop 
                                   [ customAction (umiescParePrzeskod wysokoscBohatera)
                                   , waitForDuration{ actionDuration = 3 } --w sekundach
                                   ] ]
-        , nodeUserData         = StanPrzeszkod generujLosowaLiczbe 
+        , nodeUserData         = ObstaclesState getRandomNumber 
         }
 
 -- | Pole z aktualnym wynikiem gracza
@@ -87,31 +87,31 @@ wynik = (labelNodeWithFontNamed "Verdana")
 
 -- | Aktualizuje scene na podstawie zdarzeń i aktualnego stanu gry
 update :: LambdaScene -> TimeInterval -> LambdaScene
-update scene@Scene{ sceneData = sceneState@StanSceny{..} } _dt 
+update scene@Scene{ sceneData = sceneState@SceneState{..} } _dt 
   = case gameState of
-      WTrakcieGry 
+      InGame 
         | keyPressed -> przyspieszLambda scene{ sceneData = sceneState{ keyPressed = False } }
         | leftKeyPressed -> rocketTurn scene{ sceneData = sceneState{ leftKeyPressed = False } } True
         | rightKeyPressed -> rocketTurn scene{ sceneData = sceneState{ rightKeyPressed = False } } False
         | bumpScore  -> incScore scene{ sceneData = sceneState{ bumpScore = False } }
-      Wypadek        -> crash scene{ sceneData = sceneState{ gameState = Koniec } }
-      Koniec         -> scene
+      Crash        -> crash scene{ sceneData = sceneState{ gameState = End } }
+      End         -> scene
 
 -- | Przyspiesza rakiete (podskok)
 przyspieszLambda :: LambdaScene -> LambdaScene
 przyspieszLambda scene
-  = scene { sceneActionDirectives = [odtworzWlasnaAkcjeNa "Lambda" actionJump] }
+  = scene { sceneActionDirectives = [playCustomActionOn "Lambda" actionJump] }
   
 -- | Trun the rocket
 rocketTurn :: LambdaScene -> Bool -> LambdaScene
 rocketTurn scene isLeftTurn
-  = scene { sceneActionDirectives = [odtworzWlasnaAkcjeNa "Lambda" (actionTurn isLeftTurn)] }
+  = scene { sceneActionDirectives = [playCustomActionOn "Lambda" (actionTurn isLeftTurn)] }
 
 -- | Zderzenie rakiety z obiektem fizycznym
 crash :: LambdaScene -> LambdaScene
 crash scene
-  = scene { sceneActionDirectives = [ odtworzAkcjeNa "Lambda" crashAction
-                                    , odtworzAkcjeNa "ObiektyWRuchu" stopMoving
+  = scene { sceneActionDirectives = [ playActionOn "Lambda" crashAction
+                                    , playActionOn "ObiektyWRuchu" stopMoving
                                     ] }
   where
     crashAction = sequenceActions
@@ -126,7 +126,7 @@ crash scene
 incScore :: LambdaScene -> LambdaScene 
 incScore scene@Scene{ sceneData = sceneState }
   = scene
-    { sceneActionDirectives = [odtworzWlasnaAkcjeNa "Wynik" setScore]
+    { sceneActionDirectives = [playCustomActionOn "Wynik" setScore]
     , sceneData             = sceneState{ sceneScore = newScore }
     }
   where
@@ -135,19 +135,19 @@ incScore scene@Scene{ sceneData = sceneState }
     setScore label@Label{} _dt = label{ labelText = show newScore }
     setScore node          _   = node
 
-contact :: StanSceny 
+contact :: SceneState 
         -> PhysicsContact u
-        -> (Maybe StanSceny, Maybe (Node u), Maybe (Node u))
-contact state@StanSceny{..} PhysicsContact{..}
-  | (isWorld contactBodyA || isWorld contactBodyB) && gameState == WTrakcieGry
-  = (Just state{ gameState = Wypadek }, Nothing, Nothing)
+        -> (Maybe SceneState, Maybe (Node u), Maybe (Node u))
+contact state@SceneState{..} PhysicsContact{..}
+  | (isWorld contactBodyA || isWorld contactBodyB) && gameState == InGame
+  = (Just state{ gameState = Crash }, Nothing, Nothing)
   | isScore contactBodyA || isScore contactBodyB
   = (Just state{ bumpScore = True }, Nothing, Nothing)
   | otherwise
   = (Nothing, Nothing, Nothing)  
 
 -- | Obsługa eventów (naciskanie klawiszy)
-handleEvent :: Event -> StanSceny -> Maybe StanSceny
+handleEvent :: Event -> SceneState -> Maybe SceneState
 handleEvent KeyEvent{ keyEventType = KeyDown } state = Just state{ keyPressed = True }
 handleEvent MouseEvent{ mouseEventType = LeftMouseDown } state = Just state{ leftKeyPressed = True }
 handleEvent MouseEvent{ mouseEventType = RightMouseDown } state = Just state{ rightKeyPressed = True }
