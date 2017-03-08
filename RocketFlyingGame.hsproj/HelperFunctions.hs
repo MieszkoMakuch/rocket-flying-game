@@ -1,8 +1,10 @@
 {-# LANGUAGE NamedFieldPuns, RecordWildCards #-}
 
-module FunkcjePomocnicze where
+module HelperFunctions where
   
 import Graphics.SpriteKit
+import System.IO.Unsafe
+import System.Random
 
 
 -- | Stwórz teksturę na podstawie obrazka w podanym pliku, oraz określ
@@ -32,3 +34,7 @@ odtwarzajAkcjeWNieskonczonosc = runAction . repeatActionForever
 -- | Wykorzystuje funkcje odtwarzajAkcjeWNieskonczonosc
 odtwarzajListeAkcjiWNieskonczonosc :: [SAction n c] -> SDirective n c
 odtwarzajListeAkcjiWNieskonczonosc = odtwarzajAkcjeWNieskonczonosc . sequenceActions
+
+-- | Generuje losową liczbę
+generujLosowaLiczbe :: (Random a, Num a) => [a]
+generujLosowaLiczbe = unsafePerformIO $ randoms <$> newStdGen

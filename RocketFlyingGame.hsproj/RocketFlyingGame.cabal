@@ -29,12 +29,10 @@ Executable RocketFlyingGame
       HUnit -any,
       random -any
   other-modules:
-      Akcje
-      LosoweLiczby
-      Przeszkody
-      Stale
-      TestyQuickCheck
-      Sceneria
-      StanGry
-      FunkcjePomocnicze
-      TestyHUnit
+      Scenery
+      HUnitTests
+      GameState
+      HelperFunctions
+      Actions
+      DefinedConstants
+      Obstacles

@@ -1,4 +1,4 @@
-module Stale where
+module DefinedConstants where
 
 import Graphics.SpriteKit
 

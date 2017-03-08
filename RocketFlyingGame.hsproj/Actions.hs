@@ -1,9 +1,9 @@
-module Akcje where
+module Actions where
 
 import Graphics.SpriteKit
 
-import StanGry
-import Stale
+import GameState
+import DefinedConstants
 
 
 -- | Podskok przy nacisnieciu klawisza

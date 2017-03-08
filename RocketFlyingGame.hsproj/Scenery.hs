@@ -1,11 +1,11 @@
-module Sceneria where
+module Scenery where
   
 import Graphics.SpriteKit
 
-import Akcje
-import Stale
-import FunkcjePomocnicze
-import StanGry
+import Actions
+import DefinedConstants
+import HelperFunctions
+import GameState
   
 
 (teksturaOstrzy, szerokoscOstrzy, wysokoscOstrzy) = stworzTeksture "saw.png"

@@ -1,15 +1,14 @@
-module TestyHUnit where
+module HUnitTests where
   
 import Test.HUnit
 import Graphics.SpriteKit
 
-import Akcje
-import Stale
-import FunkcjePomocnicze
-import StanGry
-import Przeszkody
-import LosoweLiczby
-import Sceneria
+import Actions
+import DefinedConstants
+import HelperFunctions
+import GameState
+import Obstacles
+import Scenery
 import Main
 
 

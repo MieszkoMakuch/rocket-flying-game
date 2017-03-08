@@ -1,11 +1,11 @@
-module Przeszkody where
+module Obstacles where
   
 import Graphics.SpriteKit
 
-import Akcje
-import Stale
-import FunkcjePomocnicze
-import StanGry
+import Actions
+import DefinedConstants
+import HelperFunctions
+import GameState
 
 
 (teksturaPrawejPrzeszkody, szerokoscPrawejPrzeszkody, wysokoscPrawejPrzeszkody) = stworzTeksture "stone1.png"

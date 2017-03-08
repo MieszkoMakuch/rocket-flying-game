@@ -1,4 +1,4 @@
-module StanGry where
+module GameState where
 
 import Graphics.SpriteKit
 
