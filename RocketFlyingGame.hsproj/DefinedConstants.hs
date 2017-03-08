@@ -6,10 +6,10 @@ import Data.Bits
 import Data.Word
 
 
--- | Wymiary sceny
-szerokoscSceny, wysokoscSceny :: GFloat
-szerokoscSceny  = 850
-wysokoscSceny = 1200
+-- | Scene size
+sceneWidth, sceneHeight :: GFloat
+sceneWidth  = 850
+sceneHeight = 1200
 
 -- | Wysokość szczeliny przez którą musi przeleciec bohater
 szerokoscSzczeliny :: GFloat
@@ -26,27 +26,21 @@ categoryBitMask = foldl setCategoryBit zeroBits
   where
     setCategoryBit bits cat = bits .|. bit (fromEnum cat)
 
-jestObiektemFizycznym :: ObiektyFizyczne -> Node u -> Bool
-jestObiektemFizycznym obiekt node
+isPhysicalObject :: ObiektyFizyczne -> Node u -> Bool
+isPhysicalObject obiekt node
   = case nodePhysicsBody node of
       Just body -> testBit (bodyCategoryBitMask body) (fromEnum obiekt)
       Nothing   -> False
 
-jestSwiatem :: Node u -> Bool
-jestSwiatem = jestObiektemFizycznym Swiat
+isWorld :: Node u -> Bool
+isWorld = isPhysicalObject Swiat
 
-jestWynikiem :: Node u -> Bool
-jestWynikiem = jestObiektemFizycznym Wynik
+isScore :: Node u -> Bool
+isScore = isPhysicalObject Wynik
 
-jestBohaterem :: Node u -> Bool
-jestBohaterem = jestObiektemFizycznym Bohater
+isHero :: Node u -> Bool
+isHero = isPhysicalObject Bohater
 
--- | Kolor nieba
-kolorNieba :: Color
-kolorNieba = colorWithRGBA (81.0/255.0)
-                          (192.0/255.0)
-                          (201.0/255.0)
-                          1.0
--- | Siła skrętu
-silaSkretu :: Double
-silaSkretu = 60
+-- | Steering force
+steeringForce :: Double
+steeringForce = 60.0

@@ -17,7 +17,7 @@ ostrza = [ (spriteWithTexture teksturaOstrzy)
                   , nodeYScale           = 2
                   , nodeActionDirectives = [ruchOstrzy]
                   }
-                | x <- [0, 2*szerokoscOstrzy..2*szerokoscSceny + 2*szerokoscOstrzy]]
+                | x <- [0, 2*szerokoscOstrzy..2*sceneWidth + 2*szerokoscOstrzy]]
   where
     movementDuration = 0.009 * szerokoscOstrzy
     ruchOstrzy   = odtwarzajListeAkcjiWNieskonczonosc
@@ -31,13 +31,13 @@ ostrza = [ (spriteWithTexture teksturaOstrzy)
 
 kosmos :: [LambdaNode]
 kosmos = [ (spriteWithTexture teksturaKosmosu)
-               { nodePosition         = Point (szerokoscSceny/2) y
+               { nodePosition         = Point (sceneWidth/2) y
                , nodeZPosition        = -20
                , nodeXScale           = 1.1
                , nodeYScale           = 1.1
                , nodeActionDirectives = [ruchKosmosu]
                }
-             | y <- [0, 1.1*wysokoscKosmosu..1.1*(wysokoscSceny + wysokoscKosmosu)]]
+             | y <- [0, 1.1*wysokoscKosmosu..1.1*(sceneHeight + wysokoscKosmosu)]]
   where
     czasRuchu = 0.045 * wysokoscKosmosu
     ruchKosmosu      = odtwarzajListeAkcjiWNieskonczonosc

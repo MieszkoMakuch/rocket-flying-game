@@ -14,9 +14,8 @@ rocketFlying :: LambdaScene
 
 -- | Główna scena gry
 rocketFlying
-  = (sceneWithSize (Size szerokoscSceny wysokoscSceny))
-    { sceneBackgroundColor  = kolorNieba
-    , sceneChildren         = [rakieta, poruszajaceSieObiekty, fizykaOstrzy, wynik]
+  = (sceneWithSize (Size sceneWidth sceneHeight))
+    { sceneChildren         = [rakieta, poruszajaceSieObiekty, fizykaOstrzy, wynik]
     , sceneData             = initialSceneState
     , sceneUpdate           = Just update
     , scenePhysicsWorld     = physicsWorld
@@ -35,7 +34,7 @@ rocketFlying
 rakieta :: LambdaNode
 rakieta = (spriteWithTexture rocket1Texture)
        { nodeName             = Just "Lambda"
-       , nodePosition         = Point (szerokoscSceny * 0.5) (wysokoscSceny * 0.6)
+       , nodePosition         = Point (sceneWidth * 0.5) (sceneHeight * 0.6)
        , nodeActionDirectives = [odtwarzajAkcjeWNieskonczonosc animujBohatera]
        , nodeZRotation        = 0
        , nodePhysicsBody      
@@ -61,7 +60,7 @@ fizykaOstrzy = (node [])
                 { nodePosition    = Point 0 (wysokoscOstrzy / 2)
                 , nodePhysicsBody = Just $
                     (bodyWithEdgeFromPointToPoint (Point 0 (wysokoscOstrzy / 2))
-                                                  (Point szerokoscSceny (wysokoscOstrzy / 2)))
+                                                  (Point sceneWidth (wysokoscOstrzy / 2)))
                     { bodyCategoryBitMask = categoryBitMask [Swiat] }
                 }
 
@@ -79,7 +78,7 @@ przeszkody = (node [])
 wynik :: LambdaNode
 wynik = (labelNodeWithFontNamed "Verdana")
         { nodeName      = Just "Wynik"
-        , nodePosition  = Point (szerokoscSceny / 2) (4 * wysokoscSceny / 5)
+        , nodePosition  = Point (sceneWidth / 2) (4 * sceneHeight / 5)
         , nodeZPosition = 100
         , nodeXScale = 3
         , nodeYScale = 3
@@ -92,8 +91,8 @@ update scene@Scene{ sceneData = sceneState@StanSceny{..} } _dt
   = case gameState of
       WTrakcieGry 
         | keyPressed -> przyspieszLambda scene{ sceneData = sceneState{ keyPressed = False } }
-        | leftKeyPressed -> lewySkretLambda scene{ sceneData = sceneState{ leftKeyPressed = False } }
-        | rightKeyPressed -> prawySkretLambda scene{ sceneData = sceneState{ rightKeyPressed = False } }
+        | leftKeyPressed -> rocketTurn scene{ sceneData = sceneState{ leftKeyPressed = False } } True
+        | rightKeyPressed -> rocketTurn scene{ sceneData = sceneState{ rightKeyPressed = False } } False
         | bumpScore  -> incScore scene{ sceneData = sceneState{ bumpScore = False } }
       Wypadek        -> crash scene{ sceneData = sceneState{ gameState = Koniec } }
       Koniec         -> scene
@@ -101,17 +100,12 @@ update scene@Scene{ sceneData = sceneState@StanSceny{..} } _dt
 -- | Przyspiesza rakiete (podskok)
 przyspieszLambda :: LambdaScene -> LambdaScene
 przyspieszLambda scene
-  = scene { sceneActionDirectives = [odtworzWlasnaAkcjeNa "Lambda" akcjaPodskok] }
+  = scene { sceneActionDirectives = [odtworzWlasnaAkcjeNa "Lambda" actionJump] }
   
--- | Skręca rakiete w lewo
-lewySkretLambda :: LambdaScene -> LambdaScene
-lewySkretLambda scene
-  = scene { sceneActionDirectives = [odtworzWlasnaAkcjeNa "Lambda" akcjaLewySkret] }
- 
--- | Skręca rakiete w prawo
-prawySkretLambda :: LambdaScene -> LambdaScene
-prawySkretLambda scene
-  = scene { sceneActionDirectives = [odtworzWlasnaAkcjeNa "Lambda" akcjaPrawySkret] }
+-- | Trun the rocket
+rocketTurn :: LambdaScene -> Bool -> LambdaScene
+rocketTurn scene isLeftTurn
+  = scene { sceneActionDirectives = [odtworzWlasnaAkcjeNa "Lambda" (actionTurn isLeftTurn)] }
 
 -- | Zderzenie rakiety z obiektem fizycznym
 crash :: LambdaScene -> LambdaScene
@@ -145,9 +139,9 @@ contact :: StanSceny
         -> PhysicsContact u
         -> (Maybe StanSceny, Maybe (Node u), Maybe (Node u))
 contact state@StanSceny{..} PhysicsContact{..}
-  | (jestSwiatem contactBodyA || jestSwiatem contactBodyB) && gameState == WTrakcieGry
+  | (isWorld contactBodyA || isWorld contactBodyB) && gameState == WTrakcieGry
   = (Just state{ gameState = Wypadek }, Nothing, Nothing)
-  | jestWynikiem contactBodyA || jestWynikiem contactBodyB
+  | isScore contactBodyA || isScore contactBodyB
   = (Just state{ bumpScore = True }, Nothing, Nothing)
   | otherwise
   = (Nothing, Nothing, Nothing)  

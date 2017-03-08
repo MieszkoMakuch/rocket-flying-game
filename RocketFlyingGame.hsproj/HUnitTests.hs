@@ -12,14 +12,14 @@ import Scenery
 import Main
 
 
-jestSwiatemTest1 = TestCase (assertEqual "przykladowySwiat jest swiatem" True (jestSwiatem przykladowySwiat))
+isWorldTest1 = TestCase (assertEqual "przykladowySwiat jest swiatem" True (isWorld przykladowySwiat))
 
-jestWynikiemTest1 = TestCase (assertEqual "przykladowySwiat nie jest wynikiem" False (jestWynikiem przykladowySwiat))
-jestWynikiemTest2 = TestCase (assertEqual "przykladowyWynik jest wynikiem" True (jestWynikiem przykladowyWynik))
+isScoreTest1 = TestCase (assertEqual "przykladowySwiat nie jest wynikiem" False (isScore przykladowySwiat))
+isScoreTest2 = TestCase (assertEqual "przykladowyWynik jest wynikiem" True (isScore przykladowyWynik))
 
-jestBohateremTest1 = TestCase (assertEqual "przykladowyBohater jest bohaterem" True (jestBohaterem przykladowyBohater))
+isHeroTest1 = TestCase (assertEqual "przykladowyBohater jest bohaterem" True (isHero przykladowyBohater))
                      
-tests = TestList [TestLabel "test1" jestSwiatemTest1, TestLabel "test2" jestWynikiemTest1, TestLabel "test2" jestWynikiemTest2,TestLabel "test2" jestBohateremTest1]
+tests = TestList [TestLabel "test1" isWorldTest1, TestLabel "test2" isScoreTest1, TestLabel "test2" isScoreTest2,TestLabel "test2" isHeroTest1]
 
 -- | Definicje Mock objeków:
 

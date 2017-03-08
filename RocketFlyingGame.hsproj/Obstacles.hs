@@ -18,7 +18,7 @@ umiescParePrzeskod szerokoscBohatera pipes _dt
     , nodeUserData = pipeState'
     }
   where
-    maksymalneOdchylenie = round (1.5*szerokoscSceny) -- maksymalna różnica między pozycjami przeszkód 
+    maksymalneOdchylenie = round (1.5*sceneWidth) -- maksymalna różnica między pozycjami przeszkód 
     (pipeState', i) = randomInt (nodeUserData pipes)
     przeszkodaPrawaX         = fromIntegral $ 0 + (i `mod` maksymalneOdchylenie) `div` 2 --losowa pozycja górnej przeszkody
 
@@ -27,7 +27,7 @@ umiescParePrzeskod szerokoscBohatera pipes _dt
 stworzParePrzeszkod :: GFloat -> GFloat -> LambdaNode
 stworzParePrzeszkod szerokoscBohatera przeszkodaPrawaX
   = (node [przeszkodaLewa przeszkodaPrawaX, szczelina szerokoscBohatera, przeszkodaPrawa przeszkodaPrawaX])
-    { nodePosition         = Point 0 (wysokoscSceny + wysokoscPrawejPrzeszkody) 
+    { nodePosition         = Point 0 (sceneHeight + wysokoscPrawejPrzeszkody) 
     , nodeZPosition        = -10 --powinno być -10
     , nodeActionDirectives = [przesuwajPrzeszkodyIUsunJe]
     }
@@ -37,7 +37,7 @@ stworzParePrzeszkod szerokoscBohatera przeszkodaPrawaX
                                              { actionDuration = 0.005 * oIlePrzesunac } --czas trwania akcji (domyślnie 0.005 * oIlePrzesunac)
                                            , removeFromParent --usun przeszkody ze sceny
                                            ]
-    oIlePrzesunac     = wysokoscSceny + (2*wysokoscPrawejPrzeszkody)
+    oIlePrzesunac     = sceneHeight + (2*wysokoscPrawejPrzeszkody)
     przeszkodaLewa przeszkodaPrawaX   = stworzPrzeszkode teksturaLewejPrzeszkody 
                               (przeszkodaPrawaX + szerokoscLewejPrzeszkody + szerokoscSzczeliny)
                               szerokoscLewejPrzeszkody
@@ -63,8 +63,8 @@ stworzPrzeszkode texture x szerokosc wysokosc
 szczelina :: GFloat -> LambdaNode
 szczelina szerokoscBohatera
   = (node [])
-    { nodePosition    = Point (szerokoscSceny / 2) (wysokoscLewejPrzeszkody / 2 + szerokoscBohatera / 2) 
-    , nodePhysicsBody = Just $ (bodyWithEdgeFromPointToPoint (Point 0 0) (Point szerokoscSceny 0))
+    { nodePosition    = Point (sceneWidth / 2) (wysokoscLewejPrzeszkody / 2 + szerokoscBohatera / 2) 
+    , nodePhysicsBody = Just $ (bodyWithEdgeFromPointToPoint (Point 0 0) (Point sceneWidth 0))
                                { bodyCategoryBitMask    = categoryBitMask [Wynik]
                                , bodyContactTestBitMask = categoryBitMask [Bohater]
                                }
