@@ -14,6 +14,6 @@ Collect as many points as possible by flying between the obstacles without crash
 - **turn left** - Left Mouse Button
 - **turn right** - Right Mouse Button
 
-## Gameplay (demo on youtube):
+## Demo on youtube:
 
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/IC88DH6Gb_c/0.jpg)](https://www.youtube.com/watch?v=IC88DH6Gb_c)
