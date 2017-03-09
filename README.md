@@ -2,7 +2,7 @@
 
 Rocket Flying Game is based on the Haskell binding to Apple's SpriteKit framework: Haskell SpriteKit binding.
 
-To play Rocket Flying Game you must install Haskell for Mac IDE. Code in this repository comes in the form of a Haskell for Mac project.
+To play Rocket Flying Game you must install Haskell for Mac IDE. Code in this repository comes in the form of a Haskell for Mac project. After installing IDE and downloading repository just open the project and load the game.
 
 ## Gameplay (demo on youtube):
 
