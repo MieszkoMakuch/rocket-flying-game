@@ -8,42 +8,42 @@ import HelperFunctions
 import GameState
   
 
-(teksturaOstrzy, szerokoscOstrzy, wysokoscOstrzy) = createTexture "saw.png"
+(sawTexture, sawWidth, sawHeight) = createTexture "saw.png"
 
-ostrza :: [LambdaNode]
-ostrza = [ (spriteWithTexture teksturaOstrzy)
-                  { nodePosition         = Point x (wysokoscOstrzy / 2)
+saw :: [LambdaNode]
+saw = [ (spriteWithTexture sawTexture)
+                  { nodePosition         = Point x (sawHeight / 2)
                   , nodeXScale           = 2
                   , nodeYScale           = 2
-                  , nodeActionDirectives = [ruchOstrzy]
+                  , nodeActionDirectives = [sawMovement]
                   }
-                | x <- [0, 2*szerokoscOstrzy..2*sceneWidth + 2*szerokoscOstrzy]]
+                | x <- [0, 2*sawWidth..2*sceneWidth + 2*sawWidth]]
   where
-    movementDuration = 0.009 * szerokoscOstrzy
-    ruchOstrzy   = playSequenceOfActionsInLoop
-                       [ (moveBy $ Vector (-2*szerokoscOstrzy) 0)  --przenieś
+    movementDuration = 0.009 * sawWidth
+    sawMovement   = playSequenceOfActionsInLoop
+                       [ (moveBy $ Vector (-2*sawWidth) 0)  --move
                          { actionDuration = movementDuration }
-                       , (moveBy $ Vector (2*szerokoscOstrzy) 0)   --zresetuj
+                       , (moveBy $ Vector (2*sawWidth) 0)   --reset
                          { actionDuration = 0 }
                        ]
 
-(teksturaKosmosu, szerokoscKosmosu, wysokoscKosmosu) = createTexture "spaceBG.jpg"
+(spaceTexture, spaceWidth, spaceHeight) = createTexture "spaceBG.jpg"
 
-kosmos :: [LambdaNode]
-kosmos = [ (spriteWithTexture teksturaKosmosu)
+sky :: [LambdaNode]
+sky = [ (spriteWithTexture spaceTexture)
                { nodePosition         = Point (sceneWidth/2) y
                , nodeZPosition        = -20
                , nodeXScale           = 1.1
                , nodeYScale           = 1.1
-               , nodeActionDirectives = [ruchKosmosu]
+               , nodeActionDirectives = [spaceMovement]
                }
-             | y <- [0, 1.1*wysokoscKosmosu..1.1*(sceneHeight + wysokoscKosmosu)]]
+             | y <- [0, 1.1*spaceHeight..1.1*(sceneHeight + spaceHeight)]]
   where
-    czasRuchu = 0.045 * wysokoscKosmosu
-    ruchKosmosu      = playSequenceOfActionsInLoop
-                       [ (moveBy $ Vector 0 (-1.1*wysokoscKosmosu)) --przenieś
-                         { actionDuration = czasRuchu }
-                       , (moveBy $ Vector 0 (1.1*wysokoscKosmosu))  --zresetuj
+    movementInterval = 0.045 * spaceHeight
+    spaceMovement      = playSequenceOfActionsInLoop
+                       [ (moveBy $ Vector 0 (-1.1*spaceHeight)) --move
+                         { actionDuration = movementInterval }
+                       , (moveBy $ Vector 0 (1.1*spaceHeight))  --reset
                          { actionDuration = 0 }
                        ]
 

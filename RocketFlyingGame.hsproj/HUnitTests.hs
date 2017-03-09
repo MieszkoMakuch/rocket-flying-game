@@ -26,10 +26,10 @@ tests = TestList [TestLabel "test1" isWorldTest1, TestLabel "test2" isScoreTest1
 -- | Sample World
 sampleWorld :: LambdaNode
 sampleWorld = (node [])
-                { nodePosition    = Point 0 (wysokoscOstrzy / 2)
+                { nodePosition    = Point 0 (sawHeight / 2)
                 , nodePhysicsBody = Just $
-                    (bodyWithEdgeFromPointToPoint (Point 0 (wysokoscOstrzy / 2))
-                                                  (Point sceneWidth (wysokoscOstrzy / 2)))
+                    (bodyWithEdgeFromPointToPoint (Point 0 (sawHeight / 2))
+                                                  (Point sceneWidth (sawHeight / 2)))
                     { bodyCategoryBitMask = categoryBitMask [World] }
                 }
            
@@ -56,10 +56,10 @@ sampleRocket = (spriteWithTexture rocket1Texture)
 -- | Sample Score
 sampleScore :: LambdaNode
 sampleScore = (node [])
-                { nodePosition    = Point 0 (wysokoscOstrzy / 2)
+                { nodePosition    = Point 0 (sawHeight / 2)
                 , nodePhysicsBody = Just $
-                    (bodyWithEdgeFromPointToPoint (Point 0 (wysokoscOstrzy / 2))
-                                                  (Point sceneWidth (wysokoscOstrzy / 2)))
+                    (bodyWithEdgeFromPointToPoint (Point 0 (sawHeight / 2))
+                                                  (Point sceneWidth (sawHeight / 2)))
                     { bodyCategoryBitMask = categoryBitMask [Score] }
                 }
 

@@ -12,10 +12,10 @@ import Scenery
 
 rocketFlying :: LambdaScene
 
--- | Główna scena gry
+-- | Main game scene
 rocketFlying
   = (sceneWithSize (Size sceneWidth sceneHeight))
-    { sceneChildren         = [rakieta, poruszajaceSieObiekty, fizykaOstrzy, wynik]
+    { sceneChildren         = [rocket, objectsInMove, sawPhysics, score]
     , sceneData             = initialSceneState
     , sceneUpdate           = Just update
     , scenePhysicsWorld     = physicsWorld
@@ -25,59 +25,59 @@ rocketFlying
     , sceneHandleEvent      = Just handleEvent
     }
 
-(rocket1Texture, szerokoscBohatera, wysokoscBohatera) = createTexture "Rocket-01-T.png"
+(rocket1Texture, rocketWidth, rocketHeight)           = createTexture "Rocket-01-T.png"
 (rocket2Texture, _, _)                                = createTexture "Rocket-02-T.png"
 (rocket3Texture, _, _)                                = createTexture "Rocket-03-T.png"
 
--- | Obiekt fizyczny rakieta stworzony na podstawie tekstury, ustawiony w odpowienim miejscu, 
--- | animowany z wykorzystaniem zdefiniowanych tekstur
-rakieta :: LambdaNode
-rakieta = (spriteWithTexture rocket1Texture)
+-- | Rocket as physical object created based on the texture, 
+-- | placed in the proper position, animated using defined textures
+rocket :: LambdaNode
+rocket = (spriteWithTexture rocket1Texture)
        { nodeName             = Just "Lambda"
        , nodePosition         = Point (sceneWidth * 0.5) (sceneHeight * 0.6)
-       , nodeActionDirectives = [playAcionInLoop animujBohatera]
+       , nodeActionDirectives = [playAcionInLoop animateRocket]
        , nodeZRotation        = 0
        , nodePhysicsBody      
            = Just $                
-               (bodyWithTextureSize rocket1Texture Nothing (Size (szerokoscBohatera) (wysokoscBohatera))) 
+               (bodyWithTextureSize rocket1Texture Nothing (Size (rocketWidth) (rocketHeight))) 
                { bodyCategoryBitMask    = categoryBitMask [Rocket]
                , bodyCollisionBitMask   = categoryBitMask [World]
                , bodyContactTestBitMask = categoryBitMask [World, Score]
                }
        }
   where
-    animujBohatera = animateWithTextures --Definicja akcji flap - machanie skrzydłami
-             [rocket1Texture, rocket2Texture, rocket3Texture, rocket2Texture] 0.1 --[ zdjecie 1, zdjecie 2, zdjecie 3, zdjecie 2] co x sekund
+    animateRocket = animateWithTextures 
+             [rocket1Texture, rocket2Texture, rocket3Texture, rocket2Texture] 0.1 
+             
+-- | List of objects moving through the scene
+objectsInMove :: LambdaNode
+objectsInMove = (node $ obstacles : saw ++ sky)
+              { nodeName = Just "ObjectsInMove" }
 
--- | Lista poruszających się po scenie obiektów 
-poruszajaceSieObiekty :: LambdaNode
-poruszajaceSieObiekty = (node $ przeszkody : ostrza ++ kosmos)
-              { nodeName = Just "ObiektyWRuchu" }
-
--- | Właściwości fizyczne opisujące ostrza
-fizykaOstrzy :: LambdaNode
-fizykaOstrzy = (node [])
-                { nodePosition    = Point 0 (wysokoscOstrzy / 2)
+-- | Saw physics properties
+sawPhysics :: LambdaNode
+sawPhysics = (node [])
+                { nodePosition    = Point 0 (sawHeight / 2)
                 , nodePhysicsBody = Just $
-                    (bodyWithEdgeFromPointToPoint (Point 0 (wysokoscOstrzy / 2))
-                                                  (Point sceneWidth (wysokoscOstrzy / 2)))
+                    (bodyWithEdgeFromPointToPoint (Point 0 (sawHeight / 2))
+                                                  (Point sceneWidth (sawHeight / 2)))
                     { bodyCategoryBitMask = categoryBitMask [World] }
                 }
 
--- | Stwórz i przesuwaj przeszkody po scenie
-przeszkody :: LambdaNode
-przeszkody = (node [])
+-- | Creates and moves obstacles through the scene
+obstacles :: LambdaNode
+obstacles = (node [])
         { nodeActionDirectives = [playSequenceOfActionsInLoop 
-                                  [ customAction (umiescParePrzeskod wysokoscBohatera)
-                                  , waitForDuration{ actionDuration = 3 } --w sekundach
+                                  [ customAction (placePairOfObstacles rocketHeight)
+                                  , waitForDuration{ actionDuration = 3 }
                                   ] ]
         , nodeUserData         = ObstaclesState getRandomNumber 
         }
 
--- | Pole z aktualnym wynikiem gracza
-wynik :: LambdaNode
-wynik = (labelNodeWithFontNamed "Verdana")
-        { nodeName      = Just "Wynik"
+-- | Field with the current player's score
+score :: LambdaNode
+score = (labelNodeWithFontNamed "Verdana")
+        { nodeName      = Just "Score"
         , nodePosition  = Point (sceneWidth / 2) (4 * sceneHeight / 5)
         , nodeZPosition = 100
         , nodeXScale = 3
@@ -85,21 +85,21 @@ wynik = (labelNodeWithFontNamed "Verdana")
         , labelText     = "0"
         }
 
--- | Aktualizuje scene na podstawie zdarzeń i aktualnego stanu gry
+-- | Updates the scene based on actual game state in case of events
 update :: LambdaScene -> TimeInterval -> LambdaScene
 update scene@Scene{ sceneData = sceneState@SceneState{..} } _dt 
   = case gameState of
       InGame 
-        | keyPressed -> przyspieszLambda scene{ sceneData = sceneState{ keyPressed = False } }
+        | keyPressed -> accelerateRocket scene{ sceneData = sceneState{ keyPressed = False } }
         | leftKeyPressed -> rocketTurn scene{ sceneData = sceneState{ leftKeyPressed = False } } True
         | rightKeyPressed -> rocketTurn scene{ sceneData = sceneState{ rightKeyPressed = False } } False
         | bumpScore  -> incScore scene{ sceneData = sceneState{ bumpScore = False } }
       Crash        -> crash scene{ sceneData = sceneState{ gameState = End } }
       End         -> scene
 
--- | Przyspiesza rakiete (podskok)
-przyspieszLambda :: LambdaScene -> LambdaScene
-przyspieszLambda scene
+-- | Accelerates Rocket
+accelerateRocket :: LambdaScene -> LambdaScene
+accelerateRocket scene
   = scene { sceneActionDirectives = [playCustomActionOn "Lambda" actionJump] }
   
 -- | Trun the rocket
@@ -107,11 +107,11 @@ rocketTurn :: LambdaScene -> Bool -> LambdaScene
 rocketTurn scene isLeftTurn
   = scene { sceneActionDirectives = [playCustomActionOn "Lambda" (actionTurn isLeftTurn)] }
 
--- | Zderzenie rakiety z obiektem fizycznym
+-- | When Rocket crashes into other object
 crash :: LambdaScene -> LambdaScene
 crash scene
   = scene { sceneActionDirectives = [ playActionOn "Lambda" crashAction
-                                    , playActionOn "ObiektyWRuchu" stopMoving
+                                    , playActionOn "ObjectsInMove" stopMoving
                                     ] }
   where
     crashAction = sequenceActions
@@ -126,7 +126,7 @@ crash scene
 incScore :: LambdaScene -> LambdaScene 
 incScore scene@Scene{ sceneData = sceneState }
   = scene
-    { sceneActionDirectives = [playCustomActionOn "Wynik" setScore]
+    { sceneActionDirectives = [playCustomActionOn "Score" setScore]
     , sceneData             = sceneState{ sceneScore = newScore }
     }
   where
@@ -146,9 +146,9 @@ contact state@SceneState{..} PhysicsContact{..}
   | otherwise
   = (Nothing, Nothing, Nothing)  
 
--- | Obsługa eventów (naciskanie klawiszy)
+-- | Events handlers (key pressed)
 handleEvent :: Event -> SceneState -> Maybe SceneState
 handleEvent KeyEvent{ keyEventType = KeyDown } state = Just state{ keyPressed = True }
 handleEvent MouseEvent{ mouseEventType = LeftMouseDown } state = Just state{ leftKeyPressed = True }
 handleEvent MouseEvent{ mouseEventType = RightMouseDown } state = Just state{ rightKeyPressed = True }
-handleEvent _                                  _     = Nothing
+handleEvent _ _     = Nothing

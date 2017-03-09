@@ -24,19 +24,19 @@ rocket3Texture
 
 
 
-spriteWithTexture teksturaOstrzy
+spriteWithTexture sawTexture
 
 
 
 
 
-spriteWithTexture teksturaKosmosu
+spriteWithTexture spaceTexture
 
 
 
-node kosmos
+node sky
 
 
 
-spriteWithTexture teksturaLewejPrzeszkody
-spriteWithTexture teksturaPrawejPrzeszkody
+spriteWithTexture leftObstacleTexture
+spriteWithTexture rightObstacleTexture

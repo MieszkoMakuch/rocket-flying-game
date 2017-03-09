@@ -8,62 +8,60 @@ import HelperFunctions
 import GameState
 
 
-(teksturaPrawejPrzeszkody, szerokoscPrawejPrzeszkody, wysokoscPrawejPrzeszkody) = createTexture "stone1.png"
-(teksturaLewejPrzeszkody, szerokoscLewejPrzeszkody, wysokoscLewejPrzeszkody) = createTexture "stone2.png"
+(rightObstacleTexture, rightObstacleWidth, rightObstacleHeight) = createTexture "stone1.png"
+(leftObstacleTexture, leftObstacleWidth, leftObstacleHeight) = createTexture "stone2.png"
 
-umiescParePrzeskod :: GFloat -> LambdaNode -> TimeInterval -> LambdaNode
-umiescParePrzeskod szerokoscBohatera pipes _dt
+placePairOfObstacles :: GFloat -> LambdaNode -> TimeInterval -> LambdaNode
+placePairOfObstacles rocketWidth pipes _dt
   = pipes
-    { nodeChildren = stworzParePrzeszkod szerokoscBohatera przeszkodaPrawaX : nodeChildren pipes 
+    { nodeChildren = createPairOfObstacles rocketWidth rightObstacleXPosition : nodeChildren pipes 
     , nodeUserData = pipeState'
     }
   where
-    maksymalneOdchylenie = round (1.5*sceneWidth) -- maksymalna różnica między pozycjami przeszkód 
+    maxGap = round (1.5*sceneWidth) -- max gap between two obstacles
     (pipeState', i) = randomInt (nodeUserData pipes)
-    przeszkodaPrawaX         = fromIntegral $ 0 + (i `mod` maksymalneOdchylenie) `div` 2 --losowa pozycja górnej przeszkody
+    rightObstacleXPosition = fromIntegral $ 0 + (i `mod` maxGap) `div` 2
 
--- Zwraca parę przeszkód ze szczeliną pomiędzy jako lista obiektów (przeszkodaLewa, szczelina, przeszkodaPrawa)
--- Przyjmuje wysokość bohatera i pozycje górnej przeszkody
-stworzParePrzeszkod :: GFloat -> GFloat -> LambdaNode
-stworzParePrzeszkod szerokoscBohatera przeszkodaPrawaX
-  = (node [przeszkodaLewa przeszkodaPrawaX, szczelina szerokoscBohatera, przeszkodaPrawa przeszkodaPrawaX])
-    { nodePosition         = Point 0 (sceneHeight + wysokoscPrawejPrzeszkody) 
-    , nodeZPosition        = -10 --powinno być -10
-    , nodeActionDirectives = [przesuwajPrzeszkodyIUsunJe]
+-- Returns a pair of obstacles with the gap between as a list of objects (rightObstacle, gap, rightObstacle). 
+createPairOfObstacles :: GFloat -> GFloat -> LambdaNode
+createPairOfObstacles rocketWidth rightObstacleXPosition
+  = (node [leftObstacle rightObstacleXPosition, gap rocketWidth, rightObstacle rightObstacleXPosition])
+    { nodePosition         = Point 0 (sceneHeight + rightObstacleHeight) 
+    , nodeZPosition        = -10
+    , nodeActionDirectives = [moveAndRemoveObstacles]
     }
   where
-    przesuwajPrzeszkodyIUsunJe = runAction $ --przesuwa przeszkody przez scene, po opuszczeniu sceny usuwa przeszkody
-                           sequenceActions [ (moveBy $ Vector 0 (-oIlePrzesunac)) --o ile przesunąć przeszkody
-                                             { actionDuration = 0.005 * oIlePrzesunac } --czas trwania akcji (domyślnie 0.005 * oIlePrzesunac)
-                                           , removeFromParent --usun przeszkody ze sceny
+    moveAndRemoveObstacles  = runAction $ 
+                           sequenceActions [ (moveBy $ Vector 0 (-moveByDist)) 
+                                             { actionDuration = 0.005 * moveByDist } 
+                                           , removeFromParent 
                                            ]
-    oIlePrzesunac     = sceneHeight + (2*wysokoscPrawejPrzeszkody)
-    przeszkodaLewa przeszkodaPrawaX   = stworzPrzeszkode teksturaLewejPrzeszkody 
-                              (przeszkodaPrawaX + szerokoscLewejPrzeszkody + gapSize)
-                              szerokoscLewejPrzeszkody
-                              wysokoscLewejPrzeszkody
-    przeszkodaPrawa przeszkodaPrawaX     = stworzPrzeszkode teksturaPrawejPrzeszkody 
-                              przeszkodaPrawaX
-                              szerokoscPrawejPrzeszkody
-                              wysokoscPrawejPrzeszkody
+    moveByDist              = sceneHeight + (2*rightObstacleHeight)
+    leftObstacle rightObstacleXPosition = createObstacle leftObstacleTexture 
+                              (rightObstacleXPosition + leftObstacleWidth + gapSize)
+                              leftObstacleWidth
+                              leftObstacleHeight
+    rightObstacle rightObstacleXPosition = createObstacle rightObstacleTexture 
+                              rightObstacleXPosition
+                              rightObstacleWidth
+                              rightObstacleHeight
 
--- Zwraca przeszkodę o określonej (teksturze, pozycji y, szerokości, wysokości)
-stworzPrzeszkode :: Texture -> GFloat -> GFloat -> GFloat -> LambdaNode
-stworzPrzeszkode texture x szerokosc wysokosc
-  = (spriteWithTexture texture) --dwuwymiarowy obrazek z teksturą
-    { nodePosition    = Point x 300 --pozycja przeszkody
-    , nodePhysicsBody = Just $ (bodyWithTextureSize texture Nothing (Size (szerokosc) (wysokosc))) --nowy obiekt prostokątny o wymiarach width, height
+-- Returns obstacle with specified: (texture, y position, width, height)
+createObstacle :: Texture -> GFloat -> GFloat -> GFloat -> LambdaNode
+createObstacle texture x width height
+  = (spriteWithTexture texture) 
+    { nodePosition    = Point x 300
+    , nodePhysicsBody = Just $ (bodyWithTextureSize texture Nothing (Size (width) (height))) 
                                { bodyIsDynamic          = False
-                               , bodyCategoryBitMask    = categoryBitMask [World] --przypisanie kategorii BitMask
-                               , bodyContactTestBitMask = categoryBitMask [Rocket]  --przypisanie kontaktu z kategorią BitMask
+                               , bodyCategoryBitMask    = categoryBitMask [World] 
+                               , bodyContactTestBitMask = categoryBitMask [Rocket]
                                }
     }
 
--- Liczy punkt jeśli 
-szczelina :: GFloat -> LambdaNode
-szczelina szerokoscBohatera
+gap :: GFloat -> LambdaNode
+gap rocketWidth
   = (node [])
-    { nodePosition    = Point (sceneWidth / 2) (wysokoscLewejPrzeszkody / 2 + szerokoscBohatera / 2) 
+    { nodePosition    = Point (sceneWidth / 2) (leftObstacleHeight / 2 + rocketWidth / 2) 
     , nodePhysicsBody = Just $ (bodyWithEdgeFromPointToPoint (Point 0 0) (Point sceneWidth 0))
                                { bodyCategoryBitMask    = categoryBitMask [Score]
                                , bodyContactTestBitMask = categoryBitMask [Rocket]
