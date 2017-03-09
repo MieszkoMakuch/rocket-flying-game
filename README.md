@@ -1,7 +1,9 @@
-# Rocket Flying Game #
+# Rocket Flying Game
 
-Rocket Flying Game - gra stworzona w Haskellu
+Rocket Flying Game is based on the Haskell binding to Apple's SpriteKit framework: Haskell SpriteKit binding.
 
-## Gameplay: ##
+To play Rocket Flying Game you must install Haskell for Mac IDE. Code in this repository comes in the form of a Haskell for Mac project.
+
+## Gameplay (demo on youtube):
 
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/IC88DH6Gb_c/0.jpg)](https://www.youtube.com/watch?v=IC88DH6Gb_c)
