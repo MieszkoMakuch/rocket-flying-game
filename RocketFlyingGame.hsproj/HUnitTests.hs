@@ -43,7 +43,7 @@ sampleRocket = (spriteWithTexture rocket1Texture)
        , nodeZRotation        = 0
        , nodePhysicsBody      
            = Just $                
-               (bodyWithTextureSize rocket1Texture Nothing (Size (szerokoscBohatera) (wysokoscBohatera))) 
+               (bodyWithTextureSize rocket1Texture Nothing (Size (rocketWidth) (rocketHeight))) 
                { bodyCategoryBitMask    = categoryBitMask [Rocket]
                , bodyCollisionBitMask   = categoryBitMask [World]
                , bodyContactTestBitMask = categoryBitMask [World, Score]
